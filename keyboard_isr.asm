@@ -51,9 +51,10 @@ jmp st1
 ; table db 0eeh, 0edh, 0ebh, 0e7h, 0deh, 0ddh, 0dbh, 0d7h, 0beh, 0bdh, 0bbh, 0b7h, 7eh, 7dh
 
 liftMove db 0
-floorNum db 0
+destFloor db 0
 direction db 0
 doorState db 0
+currentFloor db 0
 
 st1: 
     cli
@@ -108,101 +109,337 @@ x1: in al, 04h
 check_key: 
     or al, bl ; which key is pressed
     cmp al, 0eeh
-    jnz x3
+    jnz x2
     call doorClose
     jmp check_key
 
-x3: cmp al, 0edh
-    jnz x4
+x2: cmp al, 0edh
+    jnz x3
     call coarseSensor
     jmp check_key
 
-x4: cmp al, 0ebh
-    jnz x5
+x3: cmp al, 0ebh
+    jnz x4
     call fineSensor
     jmp check_key
 
-x5: cmp al, 0e7h
-    jnz x6
+x4: cmp al, 0e7h
+    jnz x5
     call coarseSensor
     jmp check_key
 
-x6: cmp al, 0deh
-    jnz x7
+x5: cmp al, 0deh
+    jnz x6
     call up0
     jmp check_key
 
-x7: cmp al, 0ddh
-    jnz x8
+x6: cmp al, 0ddh
+    jnz x7
     call down1
     jmp check_key
 
-x8: cmp al, 0dbh
-    jnz x9
+x7: cmp al, 0dbh
+    jnz x8
     call up1
     jmp check_key
 
-x9: cmp al, 0d7h
-    jnz x10
+x8: cmp al, 0d7h
+    jnz x9
     call down2
     jmp check_key
 
-x10:cmp al, 0beh
-    jnz x11
+x9:cmp al, 0beh
+    jnz x10
     call up2
     jmp check_key
 
-x11:cmp al, 0bdh
-    jnz x12
+x10:cmp al, 0bdh
+    jnz x11
     call down3
     jmp check_key
 
-x12:cmp al, 0bbh
-    jnz x13
+x11:cmp al, 0bbh
+    jnz x12
     call lift0
     jmp check_key
 
-x13:cmp al, 0b7h
-    jnz x14
+x12:cmp al, 0b7h
+    jnz x13
     call lift1
     jmp check_key
 
-x14:cmp al, 07eh
-    jnz x15
+x13:cmp al, 07eh
+    jnz x14
     call lift2
     jmp check_key
 
-x15:cmp al, 07dh
+x14:cmp al, 07dh
     jnz check_key
     call lift3
     jmp check_key
 
 
+; subroutine for up0
+up0 proc near
+    push ax
+    push bx
+    mov al, currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    cmp al, 00h
+    jnz lift_not_on_gnd_floor0
+
+    mov doorState, 00h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_gnd_floor0:
+x15:cmp ah, 01h
+    jnz lift_not_moving0
+    jmp x15
+
+lift_not_moving0:
+x16:cmp bl, 01h
+    jz door_closed0
+    jmp x16
+
+door_closed0:
+    mov destFloor, 00h
+    mov direction, 00h 
+    mov liftMove, 01h
+
+    pop bx
+    pop ax
+    ret
+up0 endp
+
+; subroutine for down1 
+down1 proc near 
+    push ax
+    push bx
+    mov al, currentFloor
+    mov ah, direction
+    mov bl, liftMove
+    cmp al, 01h
+    jnz lift_not_on_first_floor_and_direction_down
+    cmp ah, 00h
+    jnz lift_not_on_first_floor_and_direction_down
     
+x17:cmp bl, 00h
+    jnz x17
+    mov doorState, 00h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_first_floor_and_direction_down:
+    cmp al, 03h
+    jnz lift_not_on_third_floor1
+    mov destFloor, 01h
+    mov liftMove, 01h
+    mov direction, 00h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_third_floor1:
+    cmp al, 02h
+    jnz lift_not_on_second_floor_and_direction_down1
+    mov destFloor, 01h
+    mov liftMove, 01h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_second_floor_and_direction_down1:
+    mov currentFloor, 01h
+    mov destFloor, 01h
+    ; Save floor number 1 in memory, complete the ongoing journey and return to third floor
+
+    pop bx
+    pop ax
+    ret
+down1 endp
+
+; subroutine for up1
+up1 proc near
+    push ax
+    push bx
+    mov al, currentFloor
+    mov ah, direction
+    mov bl, liftMove
+    cmp al, 01h
+    jnz lift_not_on_first_floor_and_direction_up1
+    cmp ah, 01h
+    jnz lift_not_on_first_floor_and_direction_up1
+
+x18:cmp bl, 00h
+    jnz x18
+    mov doorState, 00h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_first_floor_and_direction_up1:
+    cmp al, 00h
+    jnz lift_not_on_gnd_floor1
+    mov destFloor, 01h
+    mov direction, 01h
+    mov liftMove, 01h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_gnd_floor1:
+    mov currentFloor, 01h
+    mov destFloor, 01h
+    ; Save floor number 1 in memory, complete the ongoing journey and return to ground floor
+
+    pop bx
+    pop ax
+    ret
+up1 endp
+
+; subroutine for down2
+down2 proc near
+    push ax
+    push bx
+    mov al, currentFloor
+    mov ah, direction
+    mov bl, liftMove
+    cmp al, 02h
+    jnz lift_not_on_second_floor_and_direction_down2
+    cmp ah, 01h
+    jnz lift_not_on_second_floor_and_direction_down2
+
+x19:cmp bl, 00h
+    jnz x19
+    mov doorState, 00h
+    pop bx
+    pop ax
+    ret
+
+ lift_not_on_second_floor_and_direction_down2:
+    cmp al, 03h
+    jnz lift_not_on_third_floor2
+    mov destFloor, 02h
+    mov direction, 00h
+    mov liftMove, 01h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_third_floor2:
+    mov currentFloor, 02h
+    mov destFloor, 02h
+    ; Save floor number 2 in memory, complete the ongoing journey and return to third floor
+
+    pop bx
+    pop ax
+    ret
+down2 endp
+
+; subroutine for up2
+up2 proc near
+    push ax
+    push bx
+    mov al, currentFloor
+    mov ah, direction
+    mov bl, liftMove
+    cmp al, 02h
+    jnz lift_not_on_second_floor_and_direction_up
+    cmp ah, 01h
+    jnz lift_not_on_second_floor_and_direction_up
+
+x20:cmp bl, 00h
+    jnz x20
+    mov doorState, 00h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_second_floor_and_direction_up:
+    cmp al, 01h
+    jnz lift_not_on_first_floor_and_direction_up2
+    mov destFloor, 02h
+    mov liftMove, 01h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_first_floor_and_direction_up2:
+    cmp al, 00h
+    jnz lift_not_on_gnd_floor2
+    mov destFloor, 02h
+    mov liftMove, 01h
+    mov direction, 01h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_gnd_floor2:
+    mov destFloor, 02h
+    mov currentFloor, 02h
+    ; Save floor number 2 in memory, complete the ongoing journey and return to ground floor
+
+    pop bx
+    pop ax
+    ret
+up endp
+
+; subroutine for down3
+down3 proc near
+    push ax
+    push bx
+    mov al, currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    cmp al, 03h
+    jnz lift_not_on_third_floor3
+
+    mov doorState, 00h
+    mov direction, 00h
+    mov liftMove, 01h
+    pop bx
+    pop ax
+    ret
+
+lift_not_on_third_floor3:
+x21:cmp ah, 01h
+    jnz lift_not_moving3
+    jmp x21
+
+lift_not_moving3:
+x22:cmp bl, 01h
+    jz door_closed3
+    jmp x22
+
+door_closed3:
+    mov destFloor, 03h
+    mov direction, 01h 
+    mov liftMove, 01h
+
+    pop bx
+    pop ax
+    ret
+down3 endp
+
+
+
+
+
+
+
+
+
+
+
     
-;     mov cx, 14 ; setting cx = 0014d so that we can loop through all 14 elements of table
-;     mov di, 00h
-;     ;find out which element of table match with al
-; x3: cmp al, table[di]
-;     jz x2
-;     inc di
-;     loop x3
-
-; x2: cmp al, 0eeh
-;     jz doorClose
-;     cmp al, 0edh
-;     jz 
 
 
 
 
-
-
-
-
-
-;  D7  D6  D5  D4  D3  D2  D1  D0
-;                               
 
 
     
