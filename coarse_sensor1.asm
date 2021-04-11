@@ -1,5 +1,5 @@
 ; sub program when coarse_sensor1 is pressed
-coarse_sensor1 proc near
+coarse_sensor1:
     push ax
     push bx
     mov al,direction
@@ -10,6 +10,7 @@ coarse_sensor1 proc near
     call accel50
     pop bx
     pop ax
+    iret
 
 direction_up:
     inc ah
@@ -18,7 +19,7 @@ direction_up:
     call decel20
     pop bx
     pop ax
-    ret
-coarse_sensor1 endp
+    iret
+
 
     
