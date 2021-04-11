@@ -195,14 +195,14 @@ up0 proc near
     ret
 
 lift_not_on_gnd_floor0:
-x15:cmp ah, 01h
+    cmp ah, 01h
     jnz lift_not_moving0
-    jmp x15
+    jmp lift_not_on_gnd_floor0
 
 lift_not_moving0:
-x16:cmp bl, 01h
+    cmp bl, 01h
     jz door_closed0
-    jmp x16
+    jmp lift_not_moving0
 
 door_closed0:
     mov destFloor, 00h
@@ -406,14 +406,14 @@ down3 proc near
     ret
 
 lift_not_on_third_floor3:
-x21:cmp ah, 01h
+    cmp ah, 01h
     jnz lift_not_moving3
-    jmp x21
+    jmp lift_not_third_floor3
 
 lift_not_moving3:
-x22:cmp bl, 01h
+    cmp bl, 01h
     jz door_closed3
-    jmp x22
+    jmp lift_not_movin
 
 door_closed3:
     mov destFloor, 03h

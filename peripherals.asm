@@ -71,67 +71,69 @@ out intloc2,AL
 
 ; ISR for one shot timer
 os_isr:
-mov AL,01100000b ; ocw 2 specific EOI for IR0
-out intloc1,AL
-mov CL,01h
-iret
+    mov AL,01100000b ; ocw 2 specific EOI for IR0
+    out intloc1,AL
+    mov CL,01h
+    iret
 
 ; start and accelaration routine 20% to 40%
-liftstar:
-mov AL,08h ; for 20% duty cycle
-out pwm,AL
-mov AL,00h ; first give a low on port A
-out porta,AL
-mov AL,01h ; then give a high on port A to trigger one shot timer
-out porta,AL
-mov CL,00h
+liftstar proc near
+    mov AL,08h ; for 20% duty cycle
+    out pwm,AL
+    mov AL,00h ; first give a low on port A
+    out porta,AL
+    mov AL,01h ; then give a high on port A to trigger one shot timer
+    out porta,AL
+    mov CL,00h
 il1: cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
-jne il1
-mov AL,07h ; 30% duty cycle
-out pwm,AL
-mov AL,00h
-out porta,AL
-mov AL,01h
-out porta,AL
-mov CL,00h
+    jne il1
+    mov AL,07h ; 30% duty cycle
+    out pwm,AL
+    mov AL,00h
+    out porta,AL
+    mov AL,01h
+    out porta,AL
+    mov CL,00h
 il2: cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
-jne il2
-mov AL,06h ; 40% duty cycle
-out pwn,AL
-ret
+    jne il2
+    mov AL,06h ; 40% duty cycle
+    out pwn,AL
+    ret
+liftstar endp
 
 
 accel50 proc near ; accelaration to 50%
-mov AL,05h ; 50% duty cycle
-out pwn,AL
-ret
+    mov AL,05h ; 50% duty cycle
+    out pwn,AL
+    ret
 accel50 endp
 
 decel20 proc near ; decelaration routine from 50% to 20%
-mov AL,06h ; 40%
-out pwm,AL
-mov AL,00h
-out porta,AL
-mov AL,01h
-out porta,AL
-mov CL,00h
-il3: cmp CL,01h
-jne il3
-mov AL,07h ; 30%
-out pwm,AL
-mov AL,00h
-out porta,AL
-mov AL,01h
-out porta,AL
-mov CL,00h
-il4: cmp CL,01h
-jne il4
-mov AL,08h ; 20%
-out pwm,AL
-ret 
+    mov AL,06h ; 40%
+    out pwm,AL
+    mov AL,00h
+    out porta,AL
+    mov AL,01h
+    out porta,AL
+    mov CL,00h
+il3:cmp CL,01h
+    jne il3
+    mov AL,07h ; 30%
+    out pwm,AL
+    mov AL,00h
+    out porta,AL
+    mov AL,01h
+    out porta,AL
+    mov CL,00h
+il4:cmp CL,01h
+    jne il4
+    mov AL,08h ; 20%
+    out pwm,AL
+    ret 
 decel endp
 
 ; finally stop from 20% to 0
-liftstop:
-mov AL,0ah
-out pwm,AL
+liftstop proc near
+    mov AL,0ah
+    out pwm,AL
+liftstop endp
