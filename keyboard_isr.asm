@@ -425,6 +425,164 @@ door_closed3:
     ret
 down3 endp
 
+;subroutine for 0 pressed inside lift
+lift0 proc near
+    push ax
+    push bx
+
+    mov al,currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    cmp al,00h
+    jnz not_on_0
+    mov ah,00
+    mov bl,00
+    pop bx
+    pop ax
+    ret
+not_on_0:
+    cmp ah,00
+    jnz not_on_0
+    cmp bl,01
+    jnz not_on_0
+    mov destFloor,0
+    mov direction,0
+    mov doorState,1
+    mov liftMove,01
+    pop bx
+    pop ax
+    ret
+lift0 endp
+
+;subroutine for 1 pressed inside lift
+lift1 proc near
+    push bx 
+    push ax
+    mov al,currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    cmp al,01
+    jnz floor_0
+    mov liftMove,00
+    mov doorState,00
+    pop bx
+    pop ax
+    ret
+
+floor_0:
+
+    cmp al,00
+    jnz floor_either_2_or_3
+    cmp ah,00
+    jnz floor_0
+    cmp bl,01
+    jnz floor_0
+    mov destfloor,1
+    mov direction,1
+    mov doorState,1
+    mov liftMove,1
+    pop bx
+    pop ax
+    ret
+
+floor_either_2_or_3:
+    cmp ah,00
+    jnz floor_either_2_or_3
+    cmp bl,01
+    jnz floor_either_2_or_3
+    mov destfloor,1
+    mov direction,0
+    mov doorState,1
+    mov liftMove,1
+    pop bx
+    pop ax
+    ret
+lift1 endp
+
+;subroutine for 2 pressed inside lift
+lift2 proc near
+    push bx 
+    push ax
+    mov al,currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    cmp al,02
+    jnz floor_3
+    mov liftMove,00
+    mov doorState,00
+    pop bx
+    pop ax
+    ret
+
+floor_3:
+    cmp al,03
+    jnz floor_either_0_or_1
+    cmp ah,00
+    jnz floor_3
+    cmp bl,01
+    jnz floor_3
+    mov destfloor,2
+    mov direction,0
+    mov doorState,1
+    mov liftMove,1
+    pop bx
+    pop ax
+    ret
+
+floor_either_0_or_1:
+    cmp ah,00
+    jnz floor_either_0_or_1
+    cmp bl,01
+    jnz floor_either_0_or_1
+    mov destfloor,2
+    mov direction,1
+    mov doorState,1
+    mov liftMove,1
+    pop bx
+    pop ax
+    ret
+lift2 endp
+
+;subroutine for 3 pressed inside lift 
+lift3 proc near
+    push bx 
+    push ax
+    mov al,currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    cmp al,03h
+    jnz not_on_0
+    mov ah,00
+    mov bl,00
+    pop bx
+    pop ax
+    ret
+not_on_3:
+    cmp ah,00
+    jnz not_on_3
+    cmp bl,01
+    jnz not_on_3
+    mov destFloor,3
+    mov direction,1
+    mov doorState,1
+    mov liftMove,01
+
+    pop bx
+    pop ax
+    ret
+lift3 endp
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
