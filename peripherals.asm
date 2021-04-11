@@ -100,11 +100,14 @@ mov AL,06h ; 40% duty cycle
 out pwn,AL
 ret
 
-accel50: ; accelaration to 50%
+
+accel50 proc near ; accelaration to 50%
 mov AL,05h ; 50% duty cycle
 out pwn,AL
+ret
+accel50 endp
 
-decel20: ; decelaration routine from 50% to 20%
+decel20 proc near ; decelaration routine from 50% to 20%
 mov AL,06h ; 40%
 out pwm,AL
 mov AL,00h
@@ -126,6 +129,7 @@ jne il4
 mov AL,08h ; 20%
 out pwm,AL
 ret 
+decel endp
 
 ; finally stop from 20% to 0
 liftstop:
