@@ -60,6 +60,11 @@ out portb,AL ; display zero on the LED, at the start
 
 
 ; initializing 8259
+; IR0 = for generating 100 ms one shot timer
+; IR1 = for keyboard interrupt
+; IR2 = for Coarse Sensor 1 (CS1)
+; IR3 = for Coarse Sensor 2 (CS2)
+; IR4 = for Fine Sensor (FS)
 mov AL,00010011b ; icw 1
 out intloc1,AL
 mov AL,00000000b ; icw 2; Pending decision on first 5 bits of vector number
@@ -85,7 +90,7 @@ liftstar proc near
     mov AL,01h ; then give a high on port A to trigger one shot timer
     out porta,AL
     mov CL,00h
-il1: cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
+il1:cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
     jne il1
     mov AL,07h ; 30% duty cycle
     out pwm,AL
@@ -94,7 +99,7 @@ il1: cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
     mov AL,01h
     out porta,AL
     mov CL,00h
-il2: cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
+il2:cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
     jne il2
     mov AL,06h ; 40% duty cycle
     out pwn,AL

@@ -2,6 +2,8 @@
 coarse_sensor1:
     push ax
     push bx
+    mov al, 01100010b ; ocw 2 specific EOI for IR2
+    out intloc1, al
     mov al,direction
     mov ah,currentFloor
     mov bl,destFloor
