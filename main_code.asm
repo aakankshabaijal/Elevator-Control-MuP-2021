@@ -138,6 +138,7 @@ st1: cli
     mov al, 00h
     out portb, al ; display zero on the LED, at the start
     out porta, al ; display zero on the LED, at the start
+    out portc, al ; give zero on keyboard column at the start
 
     ; initialising 8255
     ; port C output from 8255; for giving input signals to motor, lift door and one shot timer
