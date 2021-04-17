@@ -14,11 +14,19 @@ fs_isr:
     jnz dir_up
     dec ah
     mov currentFloor, ah
+    cmp ah, bl
+    jnz not_on_dest_floor
+    call decel20
+    call led_disp
+    mov liftMove, 00h
+    mov doorClose, 00h
+    pop bx
+    pop ax
+    iret
 
 dir_up:
     inc ah
     mov currentFloor, ah
-    call liftstar
 
     cmp ah, bl
     jnz not_on_dest_floor
@@ -31,12 +39,21 @@ dir_up:
     iret
 
 not_moving:
-    mov currentFloor, 00h
     pop bx
     pop ax
     iret
 
 not_on_dest_floor: 
+    cmp bh, 00h
+    jnz dir_up_not_dest
+    dec ah
+    mov currentFloor, ah
+    pop bx
+    pop ax
+    iret
+dir_up_not_dest:
+    inc ah
+    mov currentFloor, ah
     pop bx
     pop ax
     iret
