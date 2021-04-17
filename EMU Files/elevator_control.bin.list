@@ -1,0 +1,1251 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+elevator_control.bin -- emu8086 assembler version: 4.08  
+ 
+[ 17-04-2021  --  23:11:39 ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       #make_bin#
+[   2]        :                                       
+[   3]        :                                       #LOAD_SEGMENT=FFFFh#
+[   4]        :                                       #LOAD_OFFSET=0000h#
+[   5]        :                                       
+[   6]        :                                       #CS=0000h#
+[   7]        :                                       #IP=0000h#
+[   8]        :                                       
+[   9]        :                                       #DS=0000h#
+[  10]        :                                       #ES=0000h#
+[  11]        :                                       
+[  12]        :                                       #SS=0000h#
+[  13]        :                                       #SP=FFFEh#
+[  14]        :                                       
+[  15]        :                                       #AX=0000h#
+[  16]        :                                       #BX=0000h#
+[  17]        :                                       #CX=0000h#
+[  18]        :                                       #DX=0000h#
+[  19]        :                                       #SI=0000h#
+[  20]        :                                       #DI=0000h#
+[  21]        :                                       #BP=0000h#
+[  22]        :                                       
+[  23]    0000: E9 FD 03                              jmp st1
+[  24]    0003: 90                                    nop
+[  25]    0004: 00 00 00 00 00 00 00 00 00 00 00 00   db 28 dup(0)
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00                         
+[  26]        :                                       
+[  27]        :                                       ; int 08h for 1 shot timer
+[  28]    0020: 57 04                                 dw os_isr
+[  29]    0022: 00 00                                 dw 0
+[  30]        :                                       
+[  31]        :                                       ; int 09h for keyboard
+[  32]    0024: 5E 04                                 dw key_isr
+[  33]    0026: 00 00                                 dw 0
+[  34]        :                                       
+[  35]        :                                       ; int 10h for Coarse Sensor 2
+[  36]    0028: 0B 05                                 dw cs2_isr
+[  37]    002A: 00 00                                 dw 0
+[  38]        :                                       
+[  39]        :                                       ; int 11h for Coarse Sensor 1
+[  40]    002C: 32 05                                 dw cs1_isr
+[  41]    002E: 00 00                                 dw 0
+[  42]        :                                       
+[  43]        :                                       ; int 12h for Fine Sensor
+[  44]    0030: 5C 05                                 dw fs_isr
+[  45]    0032: 00 00                                 dw 0
+[  46]        :                                       
+[  47]        :                                       ; int 13h to int 255h not used
+[  48]    0034: 00 00 00 00 00 00 00 00 00 00 00 00   db 972 dup(0)
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                                                    
+[  49]        :                                       
+[  50]    0400: FA                                    st1: cli
+[  51]        :                                       ;rom1 : 00000 - 00fff
+[  52]        :                                       ;ram1 : 01000 - 01fff
+[  53]        :                                       ;rom2 : ff000 - fffff
+[  54]        :                                       
+[  55]        :                                       ; intialize ds, es, ss to start of RAM
+[  56]    0401: B8 00 01                              mov ax,0100h
+[  57]    0404: 8E D8                                 mov ds,ax
+[  58]    0406: 8E C0                                 mov es,ax
+[  59]    0408: 8E D0                                 mov ss,ax
+[  60]    040A: BC FE 1F                              mov sp,01ffeH
+[  61]        :                                       
+[  62]        :                                       porta equ 0b0h
+[  63]        :                                       portb equ 0b2h
+[  64]        :                                       portc equ 0b4h
+[  65]        :                                       portcreg equ 0b6h
+[  66]        :                                       
+[  67]        :                                       conv25 equ 80h
+[  68]        :                                       conv10 equ 82h
+[  69]        :                                       pwm equ 84h
+[  70]        :                                       convcreg equ 86h
+[  71]        :                                       
+[  72]        :                                       ostimer equ 90h
+[  73]        :                                       oscreg equ 96h
+[  74]        :                                       
+[  75]        :                                       intloc1 equ 0A0h
+[  76]        :                                       intloc2 equ 0A2h
+[  77]        :                                       
+[  78]        :                                       	bsrportc equ 0c4h
+[  79]        :                                       bsrcreg equ 0c6h
+[  80]        :                                       
+[  81]        :                                       
+[  82]        :                                       ; variables used
+[  83]    040D: 00                                    liftMove db 0
+[  84]    040E: 00                                    dest db 0
+[  85]    040F: 00                                    secdest db 0
+[  86]    0410: 00                                    dir db 0
+[  87]    0411: 00                                    drState db 0
+[  88]    0412: 00                                    current db 0
+[  89]        :                                       
+[  90]        :                                       ; initializing timers
+[  91]        :                                       ; first timer (chip 1) mode 3; write 16 bit value 61a8h; converts 2.5MHz into 100Hz
+[  92]    0413: B0 36                                 mov al, 00110110b
+[  93]    0415: E6 86                                 out convcreg, al
+[  94]    0417: B0 A8                                 mov al, 0a8h
+[  95]    0419: E6 80                                 out conv25, al
+[  96]    041B: B0 61                                 mov al, 61h
+[  97]    041D: E6 80                                 out conv25, al
+[  98]        :                                       
+[  99]        :                                       ; second timer (chip 1) mode 3; write 8 bit value 0ah; converts 100Hz to 10Hz
+[ 100]    041F: B0 56                                 mov al, 01010110b
+[ 101]    0421: E6 86                                 out convcreg, al
+[ 102]    0423: B0 0A                                 mov al, 0ah
+[ 103]    0425: E6 82                                 out conv10, al
+[ 104]        :                                       
+[ 105]        :                                       ; third timer (chip 1) mode 1; used for PWM
+[ 106]    0427: B0 92                                 mov al, 10010010b
+[ 107]    0429: E6 86                                 out convcreg, al
+[ 108]    042B: B0 0A                                 mov al, 0ah ; put a value of 10 so that motor is not running at the start
+[ 109]    042D: E6 84                                 out pwm, al
+[ 110]        :                                       
+[ 111]        :                                       ; first timer (chip 2) mode 1; write 8 bits value 01h
+[ 112]    042F: B0 08                                 mov al, 00001000b
+[ 113]    0431: E6 96                                 out oscreg, al
+[ 114]    0433: B0 01                                 mov al, 01h
+[ 115]    0435: E6 90                                 out ostimer, al
+[ 116]        :                                       
+[ 117]        :                                       ; initializing 8255
+[ 118]        :                                       ; port A output from 8255; for showing current floor value in LED
+[ 119]        :                                       ; port B output from 8255; for showing destination floor value in LED
+[ 120]        :                                       ; port C upper output; for keyboard columns
+[ 121]        :                                       ; port C lower input; for keyboard rows
+[ 122]    0437: B0 81                                 mov al, 10000001b
+[ 123]    0439: E6 B6                                 out portcreg, al
+[ 124]    043B: B0 00                                 mov al, 00h
+[ 125]    043D: E6 B2                                 out portb, al ; display zero on the LED, at the start
+[ 126]    043F: E6 B0                                 out porta, al ; display zero on the LED, at the start
+[ 127]        :                                       
+[ 128]        :                                       ; initialising 8255
+[ 129]        :                                       ; port C output from 8255; for giving input signals to motor, lift door and one shot timer
+[ 130]    0441: B0 92                                 mov al, 10010010b
+[ 131]    0443: E6 C6                                 out bsrcreg, al
+[ 132]        :                                       
+[ 133]        :                                       ; initializing 8259
+[ 134]        :                                       ; IR0 = for generating 100 ms one shot timer
+[ 135]        :                                       ; IR1 = for keyboard interrupt
+[ 136]        :                                       ; IR2 = for Coarse Sensor 1 (CS1)
+[ 137]        :                                       ; IR3 = for Coarse Sensor 2 (CS2)
+[ 138]        :                                       ; IR4 = for Fine Sensor (FS)
+[ 139]    0445: B0 13                                 mov al, 00010011b ; icw 1
+[ 140]    0447: E6 A0                                 out intloc1, al
+[ 141]    0449: B0 08                                 mov al, 00001000b ; icw 2
+[ 142]    044B: E6 A2                                 out intloc2, al
+[ 143]    044D: B0 01                                 mov al, 00000001b ; icw 4
+[ 144]    044F: E6 A2                                 out intloc2,al
+[ 145]    0451: B0 FC                                 mov al, 11111100b ; ocw 1
+[ 146]    0453: E6 A2                                 out intloc2, al
+[ 147]        :                                       
+[ 148]    0455: EB FE                                 infiloop: jmp infiloop
+[ 149]        :                                       
+[ 150]        :                                       ;-------------------------------------------------------------------------------------------
+[ 151]        :                                       
+[ 152]        :                                       ;all isrs used in the program
+[ 153]        :                                       
+[ 154]        :                                       ; ISR for one shot timer
+[ 155]    0457:                                       os_isr:
+[ 156]    0457: B0 60                                 mov al, 01100000b ; ocw 2 specific EOI for IR0
+[ 157]    0459: E6 A0                                 out intloc1, al
+[ 158]    045B: B1 01                                 mov CL, 01h
+[ 159]    045D: CF                                    iret
+[ 160]        :                                       
+[ 161]        :                                       ; ISR for keyboard
+[ 162]    045E:                                       key_isr:
+[ 163]    045E: B0 61                                 mov al, 01100001b ; ocw 2 specific EOI for IR1
+[ 164]    0460: E6 A0                                 out intloc1, al
+[ 165]        :                                       
+[ 166]        :                                       ; check for key press
+[ 167]    0462: B0 00                                 mov al, 00h
+[ 168]    0464: E6 B4                                 out portc, al
+[ 169]    0466: E4 B4                                 x1: in al, portc
+[ 170]    0468: 24 F0                                 and al, 0f0h
+[ 171]    046A: 3C F0                                 cmp al, 0f0h
+[ 172]    046C: 74 F8                                 jz x1
+[ 173]        :                                       
+[ 174]        :                                       ; check for key press in column 1
+[ 175]    046E: B0 0E                                 mov al, 0eh
+[ 176]    0470: 8A D8                                 mov bl, al
+[ 177]    0472: E6 B4                                 out portc, al
+[ 178]    0474: E4 B4                                 in al, portc
+[ 179]    0476: 24 F0                                 and al, 0f0h
+[ 180]    0478: 3C F0                                 cmp al, 0f0h
+[ 181]    047A: 75 2A                                 jnz check_key
+[ 182]        :                                       
+[ 183]        :                                       ; check for key press in column 2
+[ 184]    047C: B0 0D                                 mov al, 0dh
+[ 185]    047E: 8A D8                                 mov bl, al
+[ 186]    0480: E6 B4                                 out portc, al
+[ 187]    0482: E4 B4                                 in al, portc
+[ 188]    0484: 24 F0                                 and al, 0f0h
+[ 189]    0486: 3C F0                                 cmp al, 0f0h
+[ 190]    0488: 75 1C                                 jnz check_key
+[ 191]        :                                       
+[ 192]        :                                       ; check for key press in column 3
+[ 193]    048A: B0 0B                                 mov al, 0bh
+[ 194]    048C: 8A D8                                 mov bl, al
+[ 195]    048E: E6 B4                                 out portc, al
+[ 196]    0490: E4 B4                                 in al, portc
+[ 197]    0492: 24 F0                                 and al, 0f0h
+[ 198]    0494: 3C F0                                 cmp al, 0f0h
+[ 199]    0496: 75 0E                                 jnz check_key
+[ 200]        :                                       
+[ 201]        :                                       ; check for key press in column 4
+[ 202]    0498: B0 0B                                 mov al, 0bh
+[ 203]    049A: 8A D8                                 mov bl, al
+[ 204]    049C: E6 B4                                 out portc, al
+[ 205]    049E: E4 B4                                 in al, portc
+[ 206]    04A0: 24 F0                                 and al, 0f0h
+[ 207]    04A2: 3C F0                                 cmp al, 0f0h
+[ 208]    04A4: 75 00                                 jnz check_key
+[ 209]        :                                       
+[ 210]        :                                       ; find out which key was pressed from hex keypad
+[ 211]        :                                       ; key00 => EEh == CLOSE DOOR
+[ 212]        :                                       ; key04 => DEh == UP0
+[ 213]        :                                       ; key05 => DDh == DOWN1
+[ 214]        :                                       ; key06 => DBh == UP1
+[ 215]        :                                       ; key07 => D7h == DOWN2
+[ 216]        :                                       ; key08 => BEh == UP2
+[ 217]        :                                       ; key09 => BDh == DOWN3
+[ 218]        :                                       ; key10 => BBh == LIFT0
+[ 219]        :                                       ; key11 => B7h == LIFT1
+[ 220]        :                                       ; key12 => 7Eh == LIFT2
+[ 221]        :                                       ; key13 => 7Dh == LIFT3
+[ 222]        :                                       
+[ 223]    04A6:                                       check_key:
+[ 224]    04A6: 0A C3                                 or al, bl ; which key is pressed
+[ 225]    04A8: 3C EE                                 cmp al, 0eeh
+[ 226]    04AA: 75 05                                 jnz x5
+[ 227]    04AC: E8 A1 06                              call drClose
+[ 228]    04AF: EB F5                                 jmp check_key
+[ 229]        :                                       
+[ 230]    04B1: 3C DE                                 x5: cmp al, 0deh
+[ 231]    04B3: 75 05                                 jnz x6
+[ 232]    04B5: E8 16 01                              call up0
+[ 233]    04B8: EB EC                                 jmp check_key
+[ 234]        :                                       
+[ 235]    04BA: 3C DD                                 x6: cmp al, 0ddh
+[ 236]    04BC: 75 05                                 jnz x7
+[ 237]    04BE: E8 4E 01                              call down1
+[ 238]    04C1: EB E3                                 jmp check_key
+[ 239]        :                                       
+[ 240]    04C3: 3C DB                                 x7: cmp al, 0dbh
+[ 241]    04C5: 75 05                                 jnz x8
+[ 242]    04C7: E8 A5 02                              call up1
+[ 243]    04CA: EB DA                                 jmp check_key
+[ 244]        :                                       
+[ 245]    04CC: 3C D7                                 x8: cmp al, 0d7h
+[ 246]    04CE: 75 05                                 jnz x9
+[ 247]    04D0: E8 61 03                              call down2
+[ 248]    04D3: EB D1                                 jmp check_key
+[ 249]        :                                       
+[ 250]    04D5: 3C BE                                 x9:cmp al, 0beh
+[ 251]    04D7: 75 05                                 jnz x10
+[ 252]    04D9: E8 E3 01                              call up2
+[ 253]    04DC: EB C8                                 jmp check_key
+[ 254]        :                                       
+[ 255]    04DE: 3C BD                                 x10:cmp al, 0bdh
+[ 256]    04E0: 75 05                                 jnz x11
+[ 257]    04E2: E8 0E 03                              call down3
+[ 258]    04E5: EB BF                                 jmp check_key
+[ 259]        :                                       
+[ 260]    04E7: 3C BB                                 x11:cmp al, 0bbh
+[ 261]    04E9: 75 05                                 jnz x12
+[ 262]    04EB: E8 CA 03                              call lift0
+[ 263]    04EE: EB B6                                 jmp check_key
+[ 264]        :                                       
+[ 265]    04F0: 3C B7                                 x12:cmp al, 0b7h
+[ 266]    04F2: 75 05                                 jnz x13
+[ 267]    04F4: E8 57 04                              call lift1
+[ 268]    04F7: EB AD                                 jmp check_key
+[ 269]        :                                       
+[ 270]    04F9: 3C 7E                                 x13:cmp al, 07eh
+[ 271]    04FB: 75 05                                 jnz x14
+[ 272]    04FD: E8 04 05                              call lift2
+[ 273]    0500: EB A4                                 jmp check_key
+[ 274]        :                                       
+[ 275]    0502: 3C 7D                                 x14:cmp al, 07dh
+[ 276]    0504: 75 A0                                 jnz check_key
+[ 277]    0506: E8 B1 05                              call lift3
+[ 278]    0509: EB 9B                                 jmp check_key
+[ 279]        :                                       
+[ 280]        :                                       
+[ 281]        :                                       ; ISR for coarse sensor 2
+[ 282]    050B:                                       cs2_isr:
+[ 283]    050B: 50                                    push ax
+[ 284]    050C: 53                                    push bx
+[ 285]    050D: B0 63                                 mov al, 01100011b ; ocw 2 specific EOI for IR3
+[ 286]    050F: E6 A0                                 out intloc1, al
+[ 287]    0511: A0 10 04                              mov al, dir
+[ 288]    0514: 8A 26 12 04                           mov ah, current
+[ 289]    0518: 8A 1E 0E 04                           mov bl, dest
+[ 290]    051C: 3C 00                                 cmp al, 00h
+[ 291]    051E: 75 06                                 jnz dir_down
+[ 292]    0520: E8 71 06                              call accel50
+[ 293]    0523: 5B                                    pop bx
+[ 294]    0524: 58                                    pop ax
+[ 295]    0525: CF                                    iret
+[ 296]        :                                       
+[ 297]    0526:                                       dir_down:
+[ 298]    0526: FE CC                                 dec ah
+[ 299]    0528: 3A E3                                 cmp ah, bl
+[ 300]    052A: 75 FA                                 jnz dir_down
+[ 301]    052C: E8 6A 06                              call decel20
+[ 302]    052F: 5B                                    pop bx
+[ 303]    0530: 58                                    pop ax
+[ 304]    0531: CF                                    iret
+[ 305]        :                                       
+[ 306]        :                                       ; SR for coarse sensor 1
+[ 307]    0532:                                       cs1_isr:
+[ 308]    0532: 50                                    push ax
+[ 309]    0533: 53                                    push bx
+[ 310]    0534: B0 62                                 mov al, 01100010b ; ocw 2 specific EOI for IR2
+[ 311]    0536: E6 A0                                 out intloc1, al
+[ 312]    0538: A0 10 04                              mov al, dir
+[ 313]    053B: 8A 26 12 04                           mov ah, current
+[ 314]    053F: 8A 1E 0E 04                           mov bl, dest
+[ 315]    0543: 80 3E 10 04 01                        cmp dir, 01
+[ 316]    0548: 75 06                                 jnz dir_up
+[ 317]    054A: E8 47 06                              call accel50
+[ 318]    054D: 5B                                    pop bx
+[ 319]    054E: 58                                    pop ax
+[ 320]    054F: CF                                    iret
+[ 321]        :                                       
+[ 322]    0550:                                       dir_up:
+[ 323]    0550: FE C4                                 inc ah
+[ 324]    0552: 3A E3                                 cmp ah, bl
+[ 325]    0554: 75 FA                                 jnz dir_up
+[ 326]    0556: E8 40 06                              call decel20
+[ 327]    0559: 5B                                    pop bx
+[ 328]    055A: 58                                    pop ax
+[ 329]    055B: CF                                    iret
+[ 330]        :                                       
+[ 331]        :                                       ; SR for fine sensor
+[ 332]    055C:                                       fs_isr:
+[ 333]    055C: 50                                    push ax
+[ 334]    055D: 53                                    push bx
+[ 335]    055E: B0 64                                 mov al, 01100100b ; ocw 2 specific EOI for IR4
+[ 336]    0560: E6 A0                                 out intloc1, al
+[ 337]    0562: A0 0D 04                              mov al, liftMove
+[ 338]    0565: 8A 26 12 04                           mov ah, current
+[ 339]    0569: 8A 1E 0E 04                           mov bl, dest
+[ 340]    056D: 8A 3E 10 04                           mov bh, dir
+[ 341]    0571: 3C 01                                 cmp al, 01h
+[ 342]    0573: 75 3F                                 jnz f2
+[ 343]    0575: 80 FF 00                              cmp bh, 00h
+[ 344]    0578: 75 1D                                 jnz f4
+[ 345]    057A: FE CC                                 dec ah
+[ 346]    057C: 88 26 12 04                           mov current, ah
+[ 347]    0580: 3A E3                                 cmp ah, bl
+[ 348]    0582: 75 33                                 jnz f1
+[ 349]    0584: E8 12 06                              call decel20
+[ 350]    0587: E8 CB 05                              call ledDisp
+[ 351]    058A: C6 06 0D 04 00                        mov liftMove, 00h
+[ 352]    058F: C6 06 11 04 00                        mov drState, 00h
+[ 353]    0594: 5B                                    pop bx
+[ 354]    0595: 58                                    pop ax
+[ 355]    0596: CF                                    iret
+[ 356]        :                                       
+[ 357]    0597:                                       f4:
+[ 358]    0597: FE C4                                 inc ah
+[ 359]    0599: 88 26 12 04                           mov current, ah
+[ 360]        :                                       
+[ 361]    059D: 3A E3                                 cmp ah, bl
+[ 362]    059F: 75 16                                 jnz f1
+[ 363]    05A1: E8 F5 05                              call decel20
+[ 364]    05A4: E8 AE 05                              call ledDisp
+[ 365]    05A7: C6 06 0D 04 00                        mov liftMove, 00h
+[ 366]    05AC: C6 06 11 04 00                        mov drState, 00h
+[ 367]    05B1: 5B                                    pop bx
+[ 368]    05B2: 58                                    pop ax
+[ 369]    05B3: CF                                    iret
+[ 370]        :                                       
+[ 371]    05B4:                                       f2:
+[ 372]    05B4: 5B                                    pop bx
+[ 373]    05B5: 58                                    pop ax
+[ 374]    05B6: CF                                    iret
+[ 375]        :                                       
+[ 376]    05B7:                                       f1:
+[ 377]    05B7: 80 FF 00                              cmp bh, 00h
+[ 378]    05BA: 75 09                                 jnz f3
+[ 379]    05BC: FE CC                                 dec ah
+[ 380]    05BE: 88 26 12 04                           mov current, ah
+[ 381]    05C2: 5B                                    pop bx
+[ 382]    05C3: 58                                    pop ax
+[ 383]    05C4: CF                                    iret
+[ 384]        :                                       
+[ 385]    05C5:                                       f3:
+[ 386]    05C5: FE C4                                 inc ah
+[ 387]    05C7: 88 26 12 04                           mov current, ah
+[ 388]    05CB: 5B                                    pop bx
+[ 389]    05CC: 58                                    pop ax
+[ 390]    05CD: CF                                    iret
+[ 391]        :                                       
+[ 392]        :                                       
+[ 393]        :                                       ; -------------------------------------------------------------------------------------
+[ 394]        :                                       
+[ 395]        :                                       ; all subroutines used in ISR
+[ 396]    05CE:                                       up0 proc near
+[ 397]    05CE: 50                                    push ax
+[ 398]    05CF: 53                                    push bx
+[ 399]    05D0: A0 12 04                              mov al, current
+[ 400]    05D3: 8A 26 0D 04                           mov ah, liftMove
+[ 401]    05D7: 8A 1E 11 04                           mov bl, drState
+[ 402]    05DB: 3C 00                                 cmp al,00
+[ 403]    05DD: 75 0D                                 jnz y2
+[ 404]    05DF: 80 FC 00                              cmp ah,00
+[ 405]    05E2: 75 08                                 jnz y2
+[ 406]        :                                       
+[ 407]    05E4:                                       y1:
+[ 408]    05E4: C6 06 11 04 00                        mov drState, 00h
+[ 409]    05E9: 5B                                    pop bx
+[ 410]    05EA: 58                                    pop ax
+[ 411]    05EB: C3                                    ret
+[ 412]        :                                       
+[ 413]    05EC:                                       y2:
+[ 414]    05EC: 80 FC 00                              cmp ah, 00
+[ 415]    05EF: 75 FB                                 jnz y2
+[ 416]    05F1: 3C 00                                 cmp al, 00
+[ 417]    05F3: 74 EF                                 jz y1
+[ 418]    05F5: C6 06 0E 04 00                        mov dest, 00
+[ 419]    05FA: C6 06 10 04 00                        mov dir, 00
+[ 420]    05FF: C6 06 11 04 01                        mov drState, 01
+[ 421]    0604: C6 06 0D 04 01                        mov liftMove, 01
+[ 422]    0609: E8 5D 05                              call liftstar
+[ 423]    060C: 5B                                    pop bx
+[ 424]    060D: 58                                    pop ax
+[ 425]    060E: C3                                    ret
+[ 426]        :                                       up0 endp
+[ 427]        :                                       
+[ 428]        :                                       
+[ 429]    060F:                                       down1 proc near
+[ 430]    060F: 50                                    push ax
+[ 431]    0610: 53                                    push bx
+[ 432]    0611: 51                                    push cx
+[ 433]    0612: A0 12 04                              mov al, current
+[ 434]    0615: 8A 26 0D 04                           mov ah, liftMove
+[ 435]    0619: 8A 1E 11 04                           mov bl, drState
+[ 436]    061D: 8A 3E 10 04                           mov bh, dir
+[ 437]    0621: 3C 01                                 cmp al, 01
+[ 438]    0623: 75 3F                                 jnz y3
+[ 439]    0625: 80 FC 01                              cmp ah, 01
+[ 440]    0628: 75 31                                 jnz y4
+[ 441]        :                                       
+[ 442]    062A: 80 FC 01                              y5: cmp ah, 01
+[ 443]    062D: 74 FB                                 jz y5
+[ 444]        :                                       
+[ 445]    062F:                                       y11:
+[ 446]    062F: C6 06 0E 04 01                        mov dest, 01
+[ 447]    0634: C6 06 11 04 01                        mov drState, 01
+[ 448]    0639: C6 06 0D 04 01                        mov liftMove, 01
+[ 449]    063E: 80 FC 00                              cmp ah, 00
+[ 450]    0641: 75 0C                                 jnz y12
+[ 451]    0643: C6 06 10 04 01                        mov dir, 01
+[ 452]    0648: E8 1E 05                              call liftstar
+[ 453]    064B: 59                                    pop cx
+[ 454]    064C: 5B                                    pop bx
+[ 455]    064D: 58                                    pop ax
+[ 456]    064E: C3                                    ret
+[ 457]        :                                       
+[ 458]    064F:                                       y12:
+[ 459]    064F: C6 06 10 04 00                        mov dir, 00
+[ 460]    0654: E8 12 05                              call liftstar
+[ 461]    0657: 59                                    pop cx
+[ 462]    0658: 5B                                    pop bx
+[ 463]    0659: 58                                    pop ax
+[ 464]    065A: C3                                    ret
+[ 465]        :                                       
+[ 466]    065B:                                       y4:
+[ 467]    065B: C6 06 11 04 00                        mov drState, 00
+[ 468]    0660: 59                                    pop cx
+[ 469]    0661: 5B                                    pop bx
+[ 470]    0662: 58                                    pop ax
+[ 471]    0663: C3                                    ret
+[ 472]        :                                       
+[ 473]    0664:                                       y3:
+[ 474]    0664: 80 FC 01                              cmp ah, 01
+[ 475]    0667: 75 46                                 jnz y6
+[ 476]    0669: 80 FF 00                              cmp bh, 0
+[ 477]    066C: 75 3A                                 jnz y7
+[ 478]    066E: 3C 02                                 cmp al, 2
+[ 479]    0670: 75 0D                                 jnz y8
+[ 480]        :                                       
+[ 481]    0672:                                       y9:
+[ 482]    0672: 8A 0E 0E 04                           mov cl, dest
+[ 483]    0676: 88 0E 0F 04                           mov secdest, cl
+[ 484]    067A: C6 06 0E 04 01                        mov dest,1
+[ 485]        :                                       
+[ 486]    067F:                                       y8:
+[ 487]    067F: 8A 0E 0E 04                           mov cl, dest
+[ 488]    0683: 80 F9 02                              cmp cl, 02
+[ 489]    0686: 75 EA                                 jnz y9
+[ 490]        :                                       
+[ 491]    0688:                                       y10:
+[ 492]    0688: 80 FC 00                              cmp ah, 00
+[ 493]    068B: 75 FB                                 jnz y10
+[ 494]    068D: C6 06 0E 04 01                        mov dest, 01
+[ 495]    0692: C6 06 11 04 01                        mov drState, 01
+[ 496]    0697: C6 06 10 04 00                        mov dir,00
+[ 497]    069C: C6 06 0D 04 01                        mov liftMove, 01
+[ 498]    06A1: E8 C5 04                              call liftstar
+[ 499]    06A4: 59                                    pop cx
+[ 500]    06A5: 5B                                    pop bx
+[ 501]    06A6: 58                                    pop ax
+[ 502]    06A7: C3                                    ret
+[ 503]        :                                       
+[ 504]    06A8:                                       y7:
+[ 505]    06A8: 80 FC 00                              cmp ah, 00
+[ 506]    06AB: 75 FB                                 jnz y7
+[ 507]    06AD: EB 00                                 jmp y6
+[ 508]        :                                       
+[ 509]    06AF:                                       y6:
+[ 510]    06AF: 3C 01                                 cmp al, 01
+[ 511]    06B1: 74 03 E9 79 FF                        jnz y11
+[ 512]    06B6: C6 06 11 04 00                        mov drState, 00
+[ 513]    06BB: 59                                    pop cx
+[ 514]    06BC: 5B                                    pop bx
+[ 515]    06BD: 58                                    pop ax
+[ 516]    06BE: C3                                    ret
+[ 517]        :                                       down1 endp
+[ 518]        :                                       
+[ 519]        :                                       
+[ 520]    06BF:                                       up2 proc near
+[ 521]    06BF: 50                                    push ax
+[ 522]    06C0: 53                                    push bx
+[ 523]    06C1: 51                                    push cx
+[ 524]    06C2: A0 12 04                              mov al, current
+[ 525]    06C5: 8A 26 0D 04                           mov ah, liftMove
+[ 526]    06C9: 8A 1E 11 04                           mov bl, drState
+[ 527]    06CD: 8A 3E 10 04                           mov bh, dir
+[ 528]    06D1: 3C 02                                 cmp al, 02
+[ 529]    06D3: 75 3F                                 jnz up2y3
+[ 530]    06D5: 80 FC 01                              cmp ah, 01
+[ 531]    06D8: 75 31                                 jnz up2y4
+[ 532]        :                                       
+[ 533]    06DA: 80 FC 01                              up2y5: cmp ah, 01
+[ 534]    06DD: 74 FB                                 jz up2y5
+[ 535]        :                                       
+[ 536]    06DF:                                       up2y11:
+[ 537]    06DF: C6 06 0E 04 02                        mov dest, 02
+[ 538]    06E4: C6 06 11 04 01                        mov drState, 01
+[ 539]    06E9: C6 06 0D 04 01                        mov liftMove, 01
+[ 540]    06EE: 80 FC 03                              cmp ah, 03
+[ 541]    06F1: 75 0C                                 jnz up2y12
+[ 542]    06F3: C6 06 10 04 00                        mov dir, 00
+[ 543]    06F8: E8 6E 04                              call liftstar
+[ 544]    06FB: 59                                    pop cx
+[ 545]    06FC: 5B                                    pop bx
+[ 546]    06FD: 58                                    pop ax
+[ 547]    06FE: C3                                    ret
+[ 548]        :                                       
+[ 549]    06FF:                                       up2y12:
+[ 550]    06FF: C6 06 10 04 01                        mov dir, 01
+[ 551]    0704: E8 62 04                              call liftstar
+[ 552]    0707: 59                                    pop cx
+[ 553]    0708: 5B                                    pop bx
+[ 554]    0709: 58                                    pop ax
+[ 555]    070A: C3                                    ret
+[ 556]        :                                       
+[ 557]    070B:                                       up2y4:
+[ 558]    070B: C6 06 11 04 00                        mov drState, 00
+[ 559]    0710: 59                                    pop cx
+[ 560]    0711: 5B                                    pop bx
+[ 561]    0712: 58                                    pop ax
+[ 562]    0713: C3                                    ret
+[ 563]        :                                       
+[ 564]    0714:                                       up2y3:
+[ 565]    0714: 80 FC 01                              cmp ah, 01
+[ 566]    0717: 75 46                                 jnz up2y6
+[ 567]    0719: 80 FF 01                              cmp bh, 1
+[ 568]    071C: 75 3A                                 jnz up2y7
+[ 569]    071E: 3C 01                                 cmp al, 1
+[ 570]    0720: 75 0D                                 jnz up2y8
+[ 571]        :                                       
+[ 572]    0722:                                       up2y9:
+[ 573]    0722: 8A 0E 0E 04                           mov cl, dest
+[ 574]    0726: 88 0E 0F 04                           mov secdest, cl
+[ 575]    072A: C6 06 0E 04 02                        mov dest, 2
+[ 576]        :                                       
+[ 577]    072F:                                       up2y8:
+[ 578]    072F: 8A 0E 0E 04                           mov cl, dest
+[ 579]    0733: 80 F9 01                              cmp cl, 01
+[ 580]    0736: 75 EA                                 jnz up2y9
+[ 581]        :                                       
+[ 582]    0738:                                       up2y10:
+[ 583]    0738: 80 FC 00                              cmp ah, 00
+[ 584]    073B: 75 FB                                 jnz up2y10
+[ 585]    073D: C6 06 0E 04 02                        mov dest, 02
+[ 586]    0742: C6 06 11 04 01                        mov drState, 01
+[ 587]    0747: C6 06 10 04 01                        mov dir, 01
+[ 588]    074C: C6 06 0D 04 01                        mov liftMove, 01
+[ 589]    0751: E8 15 04                              call liftstar
+[ 590]    0754: 59                                    pop cx
+[ 591]    0755: 5B                                    pop bx
+[ 592]    0756: 58                                    pop ax
+[ 593]    0757: C3                                    ret
+[ 594]        :                                       
+[ 595]    0758:                                       up2y7:
+[ 596]    0758: 80 FC 00                              cmp ah, 00
+[ 597]    075B: 75 FB                                 jnz up2y7
+[ 598]    075D: EB 00                                 jmp up2y6
+[ 599]        :                                       
+[ 600]    075F:                                       up2y6:
+[ 601]    075F: 3C 02                                 cmp al, 02
+[ 602]    0761: 74 03 E9 79 FF                        jnz up2y11
+[ 603]    0766: C6 06 11 04 00                        mov drState, 00
+[ 604]    076B: 59                                    pop cx
+[ 605]    076C: 5B                                    pop bx
+[ 606]    076D: 58                                    pop ax
+[ 607]    076E: C3                                    ret
+[ 608]        :                                       up2 endp
+[ 609]        :                                       
+[ 610]        :                                       
+[ 611]    076F:                                       up1 proc near
+[ 612]    076F: 50                                    push ax
+[ 613]    0770: 53                                    push bx
+[ 614]    0771: 51                                    push cx
+[ 615]    0772: A0 12 04                              mov al, current
+[ 616]    0775: 8A 26 0D 04                           mov ah, liftMove
+[ 617]    0779: 8A 1E 11 04                           mov bl, drState
+[ 618]    077D: 8A 3E 10 04                           mov bh, dir
+[ 619]    0781: 3C 01                                 cmp al, 01
+[ 620]    0783: 75 3F                                 jnz up1y3
+[ 621]    0785: 80 FC 01                              cmp ah, 01
+[ 622]    0788: 75 31                                 jnz up1y4
+[ 623]        :                                       
+[ 624]    078A: 80 FC 01                              up1y5: cmp ah, 01
+[ 625]    078D: 74 FB                                 jz up1y5
+[ 626]        :                                       
+[ 627]    078F:                                       up1y11:
+[ 628]    078F: C6 06 0E 04 01                        mov dest, 01
+[ 629]    0794: C6 06 11 04 01                        mov drState, 01
+[ 630]    0799: C6 06 0D 04 01                        mov liftMove, 01
+[ 631]    079E: 80 FC 00                              cmp ah, 00
+[ 632]    07A1: 75 0C                                 jnz up1y12
+[ 633]    07A3: C6 06 10 04 01                        mov dir, 01
+[ 634]    07A8: E8 BE 03                              call liftstar
+[ 635]    07AB: 59                                    pop cx
+[ 636]    07AC: 5B                                    pop bx
+[ 637]    07AD: 58                                    pop ax
+[ 638]    07AE: C3                                    ret
+[ 639]        :                                       
+[ 640]    07AF:                                       up1y12:
+[ 641]    07AF: C6 06 10 04 00                        mov dir, 00
+[ 642]    07B4: E8 B2 03                              call liftstar
+[ 643]    07B7: 59                                    pop cx
+[ 644]    07B8: 5B                                    pop bx
+[ 645]    07B9: 58                                    pop ax
+[ 646]    07BA: C3                                    ret
+[ 647]        :                                       
+[ 648]    07BB:                                       up1y4:
+[ 649]    07BB: C6 06 11 04 00                        mov drState, 00
+[ 650]    07C0: 59                                    pop cx
+[ 651]    07C1: 5B                                    pop bx
+[ 652]    07C2: 58                                    pop ax
+[ 653]    07C3: C3                                    ret
+[ 654]        :                                       
+[ 655]    07C4:                                       up1y3:
+[ 656]    07C4: 80 FC 01                              cmp ah, 01
+[ 657]    07C7: 75 1D                                 jnz up1y6
+[ 658]    07C9: 80 FF 01                              cmp bh, 1
+[ 659]    07CC: 75 11                                 jnz up1y7
+[ 660]        :                                       
+[ 661]    07CE:                                       up1y9:
+[ 662]    07CE: 8A 0E 0E 04                           mov cl, dest
+[ 663]    07D2: 88 0E 0F 04                           mov secdest, cl
+[ 664]    07D6: C6 06 0E 04 01                        mov dest, 1
+[ 665]    07DB: 59                                    pop cx
+[ 666]    07DC: 5B                                    pop bx
+[ 667]    07DD: 58                                    pop ax
+[ 668]    07DE: C3                                    ret
+[ 669]        :                                       
+[ 670]    07DF:                                       up1y7:
+[ 671]    07DF: 80 FC 00                              cmp ah, 00
+[ 672]    07E2: 75 FB                                 jnz up1y7
+[ 673]    07E4: EB 00                                 jmp up1y6
+[ 674]        :                                       
+[ 675]    07E6:                                       up1y6:
+[ 676]    07E6: 3C 01                                 cmp al, 01
+[ 677]    07E8: 75 A5                                 jnz up1y11
+[ 678]    07EA: C6 06 11 04 00                        mov drState, 00
+[ 679]    07EF: 59                                    pop cx
+[ 680]    07F0: 5B                                    pop bx
+[ 681]    07F1: 58                                    pop ax
+[ 682]    07F2: C3                                    ret
+[ 683]        :                                       up1 endp
+[ 684]        :                                       
+[ 685]        :                                       
+[ 686]    07F3:                                       down3 proc near
+[ 687]    07F3: 50                                    push ax
+[ 688]    07F4: 53                                    push bx
+[ 689]    07F5: A0 12 04                              mov al, current
+[ 690]    07F8: 8A 26 0D 04                           mov ah, liftMove
+[ 691]    07FC: 8A 1E 11 04                           mov bl, drState
+[ 692]    0800: 3C 03                                 cmp al, 03
+[ 693]    0802: 75 0D                                 jnz dn3y2
+[ 694]    0804: 80 FC 00                              cmp ah, 00
+[ 695]    0807: 75 08                                 jnz dn3y2
+[ 696]        :                                       
+[ 697]    0809:                                       dn3y1:
+[ 698]    0809: C6 06 11 04 00                        mov drState, 00h
+[ 699]    080E: 5B                                    pop bx
+[ 700]    080F: 58                                    pop ax
+[ 701]    0810: C3                                    ret
+[ 702]        :                                       
+[ 703]    0811:                                       dn3y2:
+[ 704]    0811: 80 FC 00                              cmp ah, 00
+[ 705]    0814: 75 FB                                 jnz dn3y2
+[ 706]    0816: 3C 03                                 cmp al, 03
+[ 707]    0818: 74 EF                                 jz dn3y1
+[ 708]    081A: C6 06 0E 04 00                        mov dest, 00
+[ 709]    081F: C6 06 10 04 00                        mov dir, 00
+[ 710]    0824: C6 06 11 04 01                        mov drState, 01
+[ 711]    0829: C6 06 0D 04 01                        mov liftMove, 01
+[ 712]    082E: E8 38 03                              call liftstar
+[ 713]    0831: 5B                                    pop bx
+[ 714]    0832: 58                                    pop ax
+[ 715]    0833: C3                                    ret
+[ 716]        :                                       down3 endp
+[ 717]        :                                       
+[ 718]    0834:                                       down2 proc near
+[ 719]    0834: 50                                    push ax
+[ 720]    0835: 53                                    push bx
+[ 721]    0836: 51                                    push cx
+[ 722]    0837: A0 12 04                              mov al, current
+[ 723]    083A: 8A 26 0D 04                           mov ah, liftMove
+[ 724]    083E: 8A 1E 11 04                           mov bl, drState
+[ 725]    0842: 8A 3E 10 04                           mov bh, dir
+[ 726]    0846: 3C 02                                 cmp al, 02
+[ 727]    0848: 75 3F                                 jnz dn2y3
+[ 728]    084A: 80 FC 01                              cmp ah, 01
+[ 729]    084D: 75 31                                 jnz dn2y4
+[ 730]        :                                       
+[ 731]    084F: 80 FC 01                              dn2y5: cmp ah, 01
+[ 732]    0852: 74 FB                                 jz dn2y5
+[ 733]        :                                       
+[ 734]    0854:                                       dn2y11:
+[ 735]    0854: C6 06 0E 04 01                        mov dest, 01
+[ 736]    0859: C6 06 11 04 01                        mov drState, 01
+[ 737]    085E: C6 06 0D 04 01                        mov liftMove, 01
+[ 738]    0863: 80 FC 03                              cmp ah, 03
+[ 739]    0866: 75 0C                                 jnz dn2y12
+[ 740]    0868: C6 06 10 04 00                        mov dir, 00
+[ 741]    086D: E8 F9 02                              call liftstar
+[ 742]    0870: 59                                    pop cx
+[ 743]    0871: 5B                                    pop bx
+[ 744]    0872: 58                                    pop ax
+[ 745]    0873: C3                                    ret
+[ 746]        :                                       
+[ 747]    0874:                                       dn2y12:
+[ 748]    0874: C6 06 10 04 01                        mov dir, 01
+[ 749]    0879: E8 ED 02                              call liftstar
+[ 750]    087C: 59                                    pop cx
+[ 751]    087D: 5B                                    pop bx
+[ 752]    087E: 58                                    pop ax
+[ 753]    087F: C3                                    ret
+[ 754]        :                                       
+[ 755]    0880:                                       dn2y4:
+[ 756]    0880: C6 06 11 04 00                        mov drState, 00
+[ 757]    0885: 59                                    pop cx
+[ 758]    0886: 5B                                    pop bx
+[ 759]    0887: 58                                    pop ax
+[ 760]    0888: C3                                    ret
+[ 761]        :                                       
+[ 762]    0889:                                       dn2y3:
+[ 763]    0889: 80 FC 01                              cmp ah, 01
+[ 764]    088C: 75 1D                                 jnz dn2y6
+[ 765]    088E: 80 FF 01                              cmp bh, 1
+[ 766]    0891: 75 11                                 jnz dn2y7
+[ 767]        :                                       
+[ 768]    0893:                                       dn2y9:
+[ 769]    0893: 8A 0E 0E 04                           mov cl, dest
+[ 770]    0897: 88 0E 0F 04                           mov secdest, cl
+[ 771]    089B: C6 06 0E 04 01                        mov dest, 1
+[ 772]    08A0: 59                                    pop cx
+[ 773]    08A1: 5B                                    pop bx
+[ 774]    08A2: 58                                    pop ax
+[ 775]    08A3: C3                                    ret
+[ 776]        :                                       
+[ 777]    08A4:                                       dn2y7:
+[ 778]    08A4: 80 FC 00                              cmp ah, 00
+[ 779]    08A7: 75 FB                                 jnz dn2y7
+[ 780]    08A9: EB 00                                 jmp dn2y6
+[ 781]        :                                       
+[ 782]    08AB:                                       dn2y6:
+[ 783]    08AB: 3C 02                                 cmp al, 02
+[ 784]    08AD: 75 A5                                 jnz dn2y11
+[ 785]    08AF: C6 06 11 04 00                        mov drState, 00
+[ 786]    08B4: 59                                    pop cx
+[ 787]    08B5: 5B                                    pop bx
+[ 788]    08B6: 58                                    pop ax
+[ 789]    08B7: C3                                    ret
+[ 790]        :                                       down2 endp
+[ 791]        :                                       
+[ 792]        :                                       
+[ 793]        :                                       ; subroutine when lift0 is pressed
+[ 794]    08B8:                                       lift0 proc near
+[ 795]    08B8: 50                                    push ax
+[ 796]    08B9: 80 3E 12 04 00                        cmp current, 0
+[ 797]    08BE: 74 1E                                 jz a1
+[ 798]    08C0: C6 06 0E 04 00                        mov dest, 0
+[ 799]    08C5: C6 06 10 04 00                        mov dir, 0
+[ 800]    08CA: C6 06 0D 04 01                        mov liftMove, 1
+[ 801]    08CF: E8 97 02                              call liftstar
+[ 802]    08D2: C6 06 11 04 01                        mov drState, 1
+[ 803]        :                                       
+[ 804]        :                                       ; check if lift is moving or not
+[ 805]    08D7: 80 3E 0D 04 01                        a2: cmp liftMove, 1
+[ 806]    08DC: 74 F9                                 jz a2
+[ 807]        :                                       
+[ 808]        :                                       ; secdest = 0 OR secdest = dest
+[ 809]    08DE: B4 00                                 a1: mov ah, 0
+[ 810]    08E0: A0 0F 04                              mov al, secDest
+[ 811]    08E3: 80 3E 0F 04 00                        cmp secDest, 0
+[ 812]    08E8: 74 4B                                 jz a3
+[ 813]    08EA: FE C4                                 inc ah
+[ 814]    08EC: 3A 06 0E 04                           cmp al, dest
+[ 815]    08F0: 74 43                                 jz a3
+[ 816]    08F2: FE C4                                 inc ah
+[ 817]    08F4: 80 FC 00                              cmp ah, 0
+[ 818]    08F7: 7D 00                                 jge a4
+[ 819]        :                                       
+[ 820]        :                                       ; secdest > dest
+[ 821]    08F9: A0 0F 04                              a4: mov al, secDest
+[ 822]    08FC: 3A 06 0E 04                           cmp al, dest
+[ 823]    0900: 7F 17                                 jg a5
+[ 824]    0902: A2 0E 04                              mov dest, al
+[ 825]    0905: C6 06 10 04 00                        mov dir, 0
+[ 826]    090A: C6 06 0D 04 01                        mov liftMove, 1
+[ 827]    090F: E8 57 02                              call liftstar
+[ 828]    0912: C6 06 11 04 01                        mov drState, 1
+[ 829]    0917: EB 15                                 jmp a6
+[ 830]        :                                       
+[ 831]    0919: A2 0E 04                              a5: mov dest, al
+[ 832]    091C: C6 06 10 04 01                        mov dir, 1
+[ 833]    0921: C6 06 0D 04 01                        mov liftMove, 1
+[ 834]    0926: E8 40 02                              call liftstar
+[ 835]    0929: C6 06 11 04 01                        mov drState, 1
+[ 836]        :                                       
+[ 837]    092E: 80 3E 0D 04 01                        a6: cmp liftMove, 1
+[ 838]    0933: 74 F9                                 jz a6
+[ 839]        :                                       
+[ 840]    0935: C6 06 0E 04 00                        a3: mov dest, 0
+[ 841]    093A: C6 06 10 04 00                        mov dir, 0
+[ 842]    093F: C6 06 0D 04 01                        mov liftMove, 1
+[ 843]    0944: E8 22 02                              call liftstar
+[ 844]    0947: C6 06 11 04 01                        mov drState, 1
+[ 845]    094C: 58                                    pop ax
+[ 846]    094D: C3                                    ret
+[ 847]        :                                       lift0 endp
+[ 848]        :                                       
+[ 849]        :                                       
+[ 850]        :                                       ; subroutine when lift1 is pressed
+[ 851]    094E:                                       lift1 proc near
+[ 852]    094E: 50                                    push ax
+[ 853]    094F: 80 3E 12 04 01                        cmp current, 1
+[ 854]    0954: 74 3E                                 jz b1
+[ 855]        :                                       
+[ 856]        :                                       ; check if current floor = 0
+[ 857]    0956: 80 3E 12 04 00                        cmp current, 0
+[ 858]    095B: 74 19                                 jz b2
+[ 859]    095D: C6 06 0E 04 01                        mov dest, 1
+[ 860]    0962: C6 06 10 04 00                        mov dir, 0
+[ 861]    0967: C6 06 0D 04 01                        mov liftMove, 1
+[ 862]    096C: E8 FA 01                              call liftstar
+[ 863]    096F: C6 06 11 04 01                        mov drState, 1
+[ 864]    0974: EB 17                                 jmp b3
+[ 865]        :                                       
+[ 866]    0976: C6 06 0E 04 01                        b2: mov dest, 1
+[ 867]    097B: C6 06 10 04 01                        mov dir, 1
+[ 868]    0980: C6 06 0D 04 01                        mov liftMove, 1
+[ 869]    0985: E8 E1 01                              call liftstar
+[ 870]    0988: C6 06 11 04 01                        mov drState, 1
+[ 871]        :                                       
+[ 872]        :                                       ; check if lift is moving or not
+[ 873]    098D: 80 3E 0D 04 01                        b3: cmp liftMove, 1
+[ 874]    0992: 74 F9                                 jz b3
+[ 875]        :                                       
+[ 876]        :                                       ; secdest = 0 OR secdest = dest
+[ 877]    0994: B4 00                                 b1: mov ah, 0
+[ 878]    0996: A0 0F 04                              mov al, secDest
+[ 879]    0999: 80 3E 0F 04 00                        cmp secDest, 0
+[ 880]    099E: 74 4B                                 jz b4
+[ 881]    09A0: FE C4                                 inc ah
+[ 882]    09A2: 3A 06 0E 04                           cmp al, dest
+[ 883]    09A6: 74 43                                 jz b4
+[ 884]    09A8: FE C4                                 inc ah
+[ 885]    09AA: 80 FC 00                              cmp ah, 0
+[ 886]    09AD: 7D 00                                 jge b5
+[ 887]        :                                       
+[ 888]        :                                       ; secdest > dest
+[ 889]    09AF: A0 0F 04                              b5: mov al, secDest
+[ 890]    09B2: 3A 06 0E 04                           cmp al, dest
+[ 891]    09B6: 7F 17                                 jg b6
+[ 892]    09B8: A2 0E 04                              mov dest, al
+[ 893]    09BB: C6 06 10 04 00                        mov dir, 0
+[ 894]    09C0: C6 06 0D 04 01                        mov liftMove, 1
+[ 895]    09C5: E8 A1 01                              call liftstar
+[ 896]    09C8: C6 06 11 04 01                        mov drState, 1
+[ 897]    09CD: EB 15                                 jmp b7
+[ 898]        :                                       
+[ 899]    09CF: A2 0E 04                              b6: mov dest, al
+[ 900]    09D2: C6 06 10 04 01                        mov dir, 1
+[ 901]    09D7: C6 06 0D 04 01                        mov liftMove, 1
+[ 902]    09DC: E8 8A 01                              call liftstar
+[ 903]    09DF: C6 06 11 04 01                        mov drState, 1
+[ 904]        :                                       
+[ 905]    09E4: 80 3E 0D 04 01                        b7: cmp liftMove, 1
+[ 906]    09E9: 74 F9                                 jz b7
+[ 907]        :                                       
+[ 908]    09EB: C6 06 0E 04 00                        b4: mov dest, 0
+[ 909]    09F0: C6 06 10 04 00                        mov dir, 0
+[ 910]    09F5: C6 06 0D 04 01                        mov liftMove, 1
+[ 911]    09FA: E8 6C 01                              call liftstar
+[ 912]    09FD: C6 06 11 04 01                        mov drState, 1
+[ 913]    0A02: 58                                    pop ax
+[ 914]    0A03: C3                                    ret
+[ 915]        :                                       lift1 endp
+[ 916]        :                                       
+[ 917]        :                                       
+[ 918]        :                                       ; subroutine when lift2 is pressed
+[ 919]    0A04:                                       lift2 proc near
+[ 920]    0A04: 50                                    push ax
+[ 921]    0A05: 80 3E 12 04 02                        cmp current, 2
+[ 922]    0A0A: 74 3E                                 jz c1
+[ 923]        :                                       
+[ 924]        :                                       ; check if current floor = 3
+[ 925]    0A0C: 80 3E 12 04 03                        cmp current, 3
+[ 926]    0A11: 74 19                                 jz c2
+[ 927]    0A13: C6 06 0E 04 02                        mov dest, 2
+[ 928]    0A18: C6 06 10 04 01                        mov dir, 1
+[ 929]    0A1D: C6 06 0D 04 01                        mov liftMove, 1
+[ 930]    0A22: E8 44 01                              call liftstar
+[ 931]    0A25: C6 06 11 04 01                        mov drState, 1
+[ 932]    0A2A: EB 17                                 jmp c3
+[ 933]        :                                       
+[ 934]    0A2C: C6 06 0E 04 02                        c2: mov dest, 2
+[ 935]    0A31: C6 06 10 04 00                        mov dir, 0
+[ 936]    0A36: C6 06 0D 04 01                        mov liftMove, 1
+[ 937]    0A3B: E8 2B 01                              call liftstar
+[ 938]    0A3E: C6 06 11 04 01                        mov drState, 1
+[ 939]        :                                       
+[ 940]        :                                       ; check if lift is moving or not
+[ 941]    0A43: 80 3E 0D 04 01                        c3: cmp liftMove, 1
+[ 942]    0A48: 74 F9                                 jz c3
+[ 943]        :                                       
+[ 944]        :                                       ; secdest = 0 OR secdest = dest
+[ 945]    0A4A: B4 00                                 c1: mov ah, 0
+[ 946]    0A4C: A0 0F 04                              mov al, secDest
+[ 947]    0A4F: 80 3E 0F 04 00                        cmp secDest, 0
+[ 948]    0A54: 74 4B                                 jz c4
+[ 949]    0A56: FE C4                                 inc ah
+[ 950]    0A58: 3A 06 0E 04                           cmp al, dest
+[ 951]    0A5C: 74 43                                 jz c4
+[ 952]    0A5E: FE C4                                 inc ah
+[ 953]    0A60: 80 FC 00                              cmp ah, 0
+[ 954]    0A63: 7D 00                                 jge c5
+[ 955]        :                                       
+[ 956]        :                                       ; secdest > dest
+[ 957]    0A65: A0 0F 04                              c5: mov al, secDest
+[ 958]    0A68: 3A 06 0E 04                           cmp al, dest
+[ 959]    0A6C: 7F 17                                 jg c6
+[ 960]    0A6E: A2 0E 04                              mov dest, al
+[ 961]    0A71: C6 06 10 04 00                        mov dir, 0
+[ 962]    0A76: C6 06 0D 04 01                        mov liftMove, 1
+[ 963]    0A7B: E8 EB 00                              call liftstar
+[ 964]    0A7E: C6 06 11 04 01                        mov drState, 1
+[ 965]    0A83: EB 15                                 jmp c7
+[ 966]        :                                       
+[ 967]    0A85: A2 0E 04                              c6: mov dest, al
+[ 968]    0A88: C6 06 10 04 01                        mov dir, 1
+[ 969]    0A8D: C6 06 0D 04 01                        mov liftMove, 1
+[ 970]    0A92: E8 D4 00                              call liftstar
+[ 971]    0A95: C6 06 11 04 01                        mov drState, 1
+[ 972]        :                                       
+[ 973]    0A9A: 80 3E 0D 04 01                        c7: cmp liftMove, 1
+[ 974]    0A9F: 74 F9                                 jz c7
+[ 975]        :                                       
+[ 976]    0AA1: C6 06 0E 04 00                        c4: mov dest, 0
+[ 977]    0AA6: C6 06 10 04 00                        mov dir, 0
+[ 978]    0AAB: C6 06 0D 04 01                        mov liftMove, 1
+[ 979]    0AB0: E8 B6 00                              call liftstar
+[ 980]    0AB3: C6 06 11 04 01                        mov drState, 1
+[ 981]    0AB8: 58                                    pop ax
+[ 982]    0AB9: C3                                    ret
+[ 983]        :                                       lift2 endp
+[ 984]        :                                       
+[ 985]        :                                       
+[ 986]        :                                       ; subroutine when lift3 is pressed
+[ 987]    0ABA:                                       lift3 proc near
+[ 988]    0ABA: 50                                    push ax
+[ 989]    0ABB: 80 3E 12 04 03                        cmp current, 3
+[ 990]    0AC0: 74 1E                                 jz d1
+[ 991]    0AC2: C6 06 0E 04 03                        mov dest, 3
+[ 992]    0AC7: C6 06 10 04 01                        mov dir, 1
+[ 993]    0ACC: C6 06 0D 04 01                        mov liftMove, 1
+[ 994]    0AD1: E8 95 00                              call liftstar
+[ 995]    0AD4: C6 06 11 04 01                        mov drState, 1
+[ 996]        :                                       
+[ 997]        :                                       ; check if lift is moving or not
+[ 998]    0AD9: 80 3E 0D 04 01                        d2: cmp liftMove, 1
+[ 999]    0ADE: 74 F9                                 jz d2
+[1000]        :                                       
+[1001]        :                                       ; secdest = 0 OR secdest = dest
+[1002]    0AE0: B4 00                                 d1: mov ah, 0
+[1003]    0AE2: A0 0F 04                              mov al, secDest
+[1004]    0AE5: 80 3E 0F 04 00                        cmp secDest, 0
+[1005]    0AEA: 74 4B                                 jz d3
+[1006]    0AEC: FE C4                                 inc ah
+[1007]    0AEE: 3A 06 0E 04                           cmp al, dest
+[1008]    0AF2: 74 43                                 jz d3
+[1009]    0AF4: FE C4                                 inc ah
+[1010]    0AF6: 80 FC 00                              cmp ah, 0
+[1011]    0AF9: 7D 00                                 jge d4
+[1012]        :                                       
+[1013]        :                                       ; secdest > dest
+[1014]    0AFB: A0 0F 04                              d4: mov al, secDest
+[1015]    0AFE: 3A 06 0E 04                           cmp al, dest
+[1016]    0B02: 7F 17                                 jg d5
+[1017]    0B04: A2 0E 04                              mov dest, al
+[1018]    0B07: C6 06 10 04 00                        mov dir, 0
+[1019]    0B0C: C6 06 0D 04 01                        mov liftMove, 1
+[1020]    0B11: E8 55 00                              call liftstar
+[1021]    0B14: C6 06 11 04 01                        mov drState, 1
+[1022]    0B19: EB 15                                 jmp d6
+[1023]        :                                       
+[1024]    0B1B: A2 0E 04                              d5: mov dest, al
+[1025]    0B1E: C6 06 10 04 01                        mov dir, 1
+[1026]    0B23: C6 06 0D 04 01                        mov liftMove, 1
+[1027]    0B28: E8 3E 00                              call liftstar
+[1028]    0B2B: C6 06 11 04 01                        mov drState, 1
+[1029]        :                                       
+[1030]    0B30: 80 3E 0D 04 01                        d6: cmp liftMove, 1
+[1031]    0B35: 74 F9                                 jz d6
+[1032]        :                                       
+[1033]    0B37: C6 06 0E 04 00                        d3: mov dest, 0
+[1034]    0B3C: C6 06 10 04 00                        mov dir, 0
+[1035]    0B41: C6 06 0D 04 01                        mov liftMove, 1
+[1036]    0B46: E8 20 00                              call liftstar
+[1037]    0B49: C6 06 11 04 01                        mov drState, 1
+[1038]    0B4E: 58                                    pop ax
+[1039]    0B4F: C3                                    ret
+[1040]        :                                       lift3 endp
+[1041]        :                                       
+[1042]        :                                       
+[1043]        :                                       ; subroutine when drClose is called
+[1044]    0B50:                                       drClose proc near
+[1045]    0B50: C6 06 11 04 01                        mov drState, 1
+[1046]        :                                       drClose endp
+[1047]        :                                       
+[1048]        :                                       
+[1049]        :                                       ; LED display logic
+[1050]    0B55:                                       ledDisp proc near
+[1051]    0B55: 50                                    push ax
+[1052]    0B56: 51                                    push cx
+[1053]    0B57: A0 12 04                              mov al, current
+[1054]    0B5A: 8A 26 0E 04                           mov ah, dest
+[1055]    0B5E: B1 04                                 mov cl, 04
+[1056]    0B60: D2 CC                                 ror ah, cl
+[1057]    0B62: 0A C4                                 or al, ah
+[1058]    0B64: E6 B2                                 out portb, al
+[1059]    0B66: 59                                    pop cx
+[1060]    0B67: 58                                    pop ax
+[1061]    0B68: C3                                    ret
+[1062]        :                                       ledDisp endp
+[1063]        :                                       
+[1064]        :                                       
+[1065]        :                                       ; start and accelaration routine 0% to 40%
+[1066]    0B69:                                       liftstar proc near
+[1067]    0B69: B0 08                                 mov AL,08h ; for 20% duty cycle
+[1068]    0B6B: E6 84                                 out pwm,AL
+[1069]    0B6D: B0 00                                 mov AL,00h ; first give a low on port C0 (bsr)
+[1070]    0B6F: E6 B0                                 out porta,AL
+[1071]    0B71: B0 01                                 mov AL,01h ; then give a high on port C0 (bsr) to trigger one shot timer
+[1072]    0B73: E6 B0                                 out porta,AL
+[1073]    0B75: B1 00                                 mov CL,00h
+[1074]    0B77: 80 F9 01                              il1:cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
+[1075]    0B7A: 75 FB                                 jne il1
+[1076]    0B7C: B0 07                                 mov AL,07h ; 30% duty cycle
+[1077]    0B7E: E6 84                                 out pwm,AL
+[1078]    0B80: B0 00                                 mov AL,00h
+[1079]    0B82: E6 B0                                 out porta,AL
+[1080]    0B84: B0 01                                 mov AL,01h
+[1081]    0B86: E6 B0                                 out porta,AL
+[1082]    0B88: B1 00                                 mov CL,00h
+[1083]    0B8A: 80 F9 01                              il2:cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
+[1084]    0B8D: 75 FB                                 jne il2
+[1085]    0B8F: B0 06                                 mov AL,06h ; 40% duty cycle
+[1086]    0B91: E6 84                                 out pwm, AL
+[1087]    0B93: C3                                    ret
+[1088]        :                                       liftstar endp
+[1089]        :                                       
+[1090]        :                                       
+[1091]        :                                       ; accelaration to 50%
+[1092]    0B94:                                       accel50 proc near
+[1093]    0B94: B0 05                                 mov AL,05h ; 50% duty cycle
+[1094]    0B96: E6 84                                 out pwm, AL
+[1095]    0B98: C3                                    ret
+[1096]        :                                       accel50 endp
+[1097]        :                                       
+[1098]        :                                       
+[1099]        :                                       ; decelaration routine from 50% to 20%
+[1100]    0B99:                                       decel20 proc near
+[1101]    0B99: B0 06                                 mov AL,06h ; 40%
+[1102]    0B9B: E6 84                                 out pwm,AL
+[1103]    0B9D: B0 00                                 mov AL,00h
+[1104]    0B9F: E6 B0                                 out porta,AL
+[1105]    0BA1: B0 01                                 mov AL,01h
+[1106]    0BA3: E6 B0                                 out porta,AL
+[1107]    0BA5: B1 00                                 mov CL,00h
+[1108]    0BA7: 80 F9 01                              il3:cmp CL,01h
+[1109]    0BAA: 75 FB                                 jne il3
+[1110]    0BAC: B0 07                                 mov AL,07h ; 30%
+[1111]    0BAE: E6 84                                 out pwm,AL
+[1112]    0BB0: B0 00                                 mov AL,00h
+[1113]    0BB2: E6 B0                                 out porta,AL
+[1114]    0BB4: B0 01                                 mov AL,01h
+[1115]    0BB6: E6 B0                                 out porta,AL
+[1116]    0BB8: B1 00                                 mov CL,00h
+[1117]    0BBA: 80 F9 01                              il4:cmp CL,01h
+[1118]    0BBD: 75 FB                                 jne il4
+[1119]    0BBF: B0 08                                 mov AL,08h ; 20%
+[1120]    0BC1: E6 84                                 out pwm,AL
+[1121]    0BC3: C3                                    ret
+[1122]        :                                       decel20 endp
+[1123]        :                                       
+[1124]        :                                       ; finally stop from 20% to 0
+[1125]    0BC4:                                       liftstop proc near
+[1126]    0BC4: B0 0A                                 mov AL,0ah
+[1127]    0BC6: E6 84                                 out pwm,AL
+[1128]        :                                       liftstop endp
+[1129]        :                                       
+[1130]        :                                       
+[1131]        :                                       
+[1132]        :                                       		
+[1133]        :                                       	
+[1134]        :                                       
+[1135]        :                                       
+[1136]        :                                       		
+[1137]        :                                       
+[1138]        :                                       
+[1139]        :                                       
+[1140]        :                                       
+[1141]        :                                       
+[1142]        :                                       
+[1143]        :                                       
+[1144]        :                                       
+[1145]        :                                       
+[1146]        :                                       
+[1147]        :                                       
+[1148]        :                                       
+[1149]        :                                       
+[1150]        :                                       
+ 
+===================================================================================================
+ 
+
+
+
+
+===================================================================================================

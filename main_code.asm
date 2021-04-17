@@ -78,6 +78,13 @@ st1: cli
 	bsrportc equ 0c4h
     bsrcreg equ 0c6h
 
+    ; suppose set LIFTDIR bit (PC1 of bsr)
+    ; mov al, 03h  ; 0000 001 1
+    ; out bsrcreg, al
+
+    ; suppose set DOORCLOSE bit (PC2 of bsr)
+    ; mov al, 05h ; 0000 010 1
+    ; out bsrcreg, al
 
     ; variables used
     liftMove db 0
@@ -834,7 +841,7 @@ a5: mov dest, al
     call liftstar
     mov drState, 1
 
-a6: cmp, liftMove, 1
+a6: cmp liftMove, 1
     jz a6
 
 a3: mov dest, 0
@@ -902,7 +909,7 @@ b6: mov dest, al
     call liftstar
     mov drState, 1
 
-b7: cmp, liftMove, 1
+b7: cmp liftMove, 1
     jz b7
 
 b4: mov dest, 0
@@ -970,7 +977,7 @@ c6: mov dest, al
     call liftstar
     mov drState, 1
 
-c7: cmp, liftMove, 1
+c7: cmp liftMove, 1
     jz c7
 
 c4: mov dest, 0
@@ -1027,7 +1034,7 @@ d5: mov dest, al
     call liftstar
     mov drState, 1
 
-d6: cmp, liftMove, 1
+d6: cmp liftMove, 1
     jz d6
 
 d3: mov dest, 0
@@ -1061,6 +1068,71 @@ ledDisp proc near
     ret
 ledDisp endp
 
+
+; start and accelaration routine 0% to 40%
+liftstar proc near
+    mov AL,08h ; for 20% duty cycle
+    out pwm,AL
+    mov AL,00h ; first give a low on port C0 (bsr)
+    out porta,AL
+    mov AL,01h ; then give a high on port C0 (bsr) to trigger one shot timer
+    out porta,AL
+    mov CL,00h
+il1:cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
+    jne il1
+    mov AL,07h ; 30% duty cycle
+    out pwm,AL
+    mov AL,00h
+    out porta,AL
+    mov AL,01h
+    out porta,AL
+    mov CL,00h
+il2:cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
+    jne il2
+    mov AL,06h ; 40% duty cycle
+    out pwm, AL
+    ret
+liftstar endp
+
+
+; accelaration to 50%
+accel50 proc near 
+    mov AL,05h ; 50% duty cycle
+    out pwm, AL
+    ret
+accel50 endp
+
+
+; decelaration routine from 50% to 20%
+decel20 proc near 
+    mov AL,06h ; 40%
+    out pwm,AL
+    mov AL,00h
+    out porta,AL
+    mov AL,01h
+    out porta,AL
+    mov CL,00h
+il3:cmp CL,01h
+    jne il3
+    mov AL,07h ; 30%
+    out pwm,AL
+    mov AL,00h
+    out porta,AL
+    mov AL,01h
+    out porta,AL
+    mov CL,00h
+il4:cmp CL,01h
+    jne il4
+    mov AL,08h ; 20%
+    out pwm,AL
+    ret 
+decel20 endp
+
+; finally stop from 20% to 0
+liftstop proc near
+    mov AL,0ah
+    out pwm,AL
+liftstop endp
     
 
     
