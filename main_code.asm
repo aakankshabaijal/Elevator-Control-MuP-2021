@@ -137,9 +137,911 @@ st1: cli
     out intloc2,AL
     
 infiloop: jmp infiloop
+
+;-------------------------------------------------------------------------------------------
+
+;all isrs used in the program
+
+    ; ISR for one shot timer
+    os_isr:
+        mov AL,01100000b ; ocw 2 specific EOI for IR0
+        out intloc1,AL
+        mov CL,01h
+        iret
     
-    ; asli kaam
+    ; ISR for keyboard
     key_isr:
+        ; key00 => EEh == CLOSE DOOR
+        ; key04 => DEh == UP0
+        ; key05 => DDh == DOWN1
+        ; key06 => DBh == UP1
+        ; key07 => D7h == DOWN2 
+        ; key08 => BEh == UP2
+        ; key09 => BDh == DOWN3
+        ; key10 => BBh == LIFT0
+        ; key11 => B7h == LIFT1
+        ; key12 => 7Eh == LIFT2
+        ; key13 => 7Dh == LIFT3
+
+
+
+        ; TODO: write OCW 2 for keyboard
+
+
+
+        ; check for key press
+        mov al, 00h
+        out portc, al
+    x1: in al, portc
+        and al, 0f0h
+        cmp al, 0f0h
+        jz x1
+
+        ; check for key press in column 1
+        mov al, 0eh
+        mov bl, al
+        out portc, al
+        in al, portc
+        and al, 0f0h
+        cmp al, 0f0h
+        jnz check_key
+
+        ; check for key press in column 2
+        mov al, 0dh
+        mov bl, al
+        out portc, al
+        in al, portc
+        and al, 0f0h
+        cmp al, 0f0h
+        jnz check_key
+
+        ; check for key press in column 3
+        mov al, 0bh
+        mov bl, al
+        out portc, al
+        in al, portc
+        and al, 0f0h
+        cmp al, 0f0h
+        jnz check_key
+
+        ; check for key press in column 4
+        mov al, 0bh
+        mov bl, al
+        out portc, al
+        in al, portc
+        and al, 0f0h
+        cmp al, 0f0h
+        jnz check_key
+
+        ; find out which key was pressed from hex keypad
+    check_key: 
+        or al, bl ; which key is pressed
+        cmp al, 0eeh
+        jnz x5
+        call doorClose
+        jmp check_key
+
+    x5: cmp al, 0deh
+        jnz x6                              
+        call up0
+        jmp check_key
+
+    x6: cmp al, 0ddh 
+        jnz x7
+        call down1
+        jmp check_key
+
+    x7: cmp al, 0dbh
+        jnz x8
+        call up1
+        jmp check_key
+
+    x8: cmp al, 0d7h
+        jnz x9
+        call down2
+        jmp check_key
+
+    x9:cmp al, 0beh
+        jnz x10
+        call up2
+        jmp check_key
+
+    x10:cmp al, 0bdh
+        jnz x11
+        call down3
+        jmp check_key
+
+    x11:cmp al, 0bbh
+        jnz x12
+        call lift0
+        jmp check_key
+
+    x12:cmp al, 0b7h
+        jnz x13
+        call lift1
+        jmp check_key
+
+    x13:cmp al, 07eh
+        jnz x14
+        call lift2
+        jmp check_key
+
+    x14:cmp al, 07dh
+        jnz check_key
+        call lift3
+        jmp check_key
+
+
+    ; ISR for coarse sensor 2
+    cs2_isr:
+        push ax
+        push bx
+        mov al, 01100011b ; ocw 2 specific EOI for IR3
+        out intloc1, al
+        mov al, direction
+        mov ah, currentFloor
+        mov bl, destFloor
+        cmp al, 00h
+        jnz dir_down
+        call accel50
+        pop bx
+        pop ax
+        iret
+
+    dir_down:
+        dec ah
+        cmp ah, bl
+        jnz dir_down
+        call decel20
+        pop bx
+        pop ax
+        iret
+
+    ; SR for coarse sensor 1
+    cs1_isr:
+        push ax
+        push bx
+        mov al, 01100010b ; ocw 2 specific EOI for IR2
+        out intloc1, al
+        mov al,direction
+        mov ah,currentFloor
+        mov bl,destFloor
+        cmp dir,01
+        jnz direction_up
+        call accel50
+        pop bx
+        pop ax
+        iret
+
+    direction_up:
+        inc ah
+        cmp ah,bl
+        jnz direction_up
+        call decel20
+        pop bx
+        pop ax
+        iret
+
+    ; SR for fine sensor
+    fs_isr: 
+        push ax
+        push bx
+        mov al, 01100100b ; ocw 2 specific EOI for IR4
+        out intloc1, al
+        mov al, liftMove
+        mov ah, currentFloor
+        mov bl, destFloor
+        mov bh, direction
+        cmp al, 01h
+        jnz f2
+        cmp bh, 00h
+        jnz f4
+        dec ah
+        mov currentFloor, ah
+        cmp ah, bl
+        jnz f1
+        call decel20
+        call led_disp
+        mov liftMove, 00h
+        mov doorClose, 00h
+        pop bx
+        pop ax
+        iret
+
+    f4:
+        inc ah
+        mov currentFloor, ah
+
+        cmp ah, bl
+        jnz f1
+        call decel20
+        call led_disp
+        mov liftMove, 00h
+        mov doorClose, 00h
+        pop bx
+        pop ax
+        iret
+
+    f2:
+        pop bx
+        pop ax
+        iret
+
+    f1: 
+        cmp bh, 00h
+        jnz f3
+        dec ah
+        mov currentFloor, ah
+        pop bx
+        pop ax
+        iret
+
+    f3:
+        inc ah
+        mov currentFloor, ah
+        pop bx
+        pop ax
+        iret
+
+
+; -------------------------------------------------------------------------------------
+
+; all subroutines used in ISR
+up0 proc near
+    push ax
+    push bx
+    mov al, currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    cmp al,00
+    jnz y2
+    cmp ah,00
+    jnz y2
+    
+y1:    
+    mov doorState, 00h
+    pop bx
+    pop ax
+    ret
+
+y2:
+    cmp ah,00
+    jnz y2
+    cmp al,00
+    jz y1
+    mov destFloor,00
+    mov direction,00
+    mov doorState,01
+    mov liftMove,01
+    call liftstar
+    pop bx
+    pop ax
+    ret
+up0 endp
+
+
+down1 proc near
+    push ax
+    push bx
+    push cx
+    mov al, currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    mov bh,direction
+    cmp al,01
+    jnz y3
+    cmp ah,01
+    jnz y4
+
+y5: cmp ah,01
+    jz y5
+
+y11:
+    mov destFloor,01
+    mov doorState,01
+    mov liftMove,01
+    cmp ah,00
+    jnz y12
+    mov direction,01
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+y12:
+    mov direction,00
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+y4:
+    mov doorState,00
+    pop cx
+    pop bx
+    pop ax
+    ret
+    
+y3: 
+    cmp ah,01
+    jnz y6
+    cmp bh,0
+    jnz y7
+    cmp al,2
+    jnz y8
+
+y9:
+    mov cl,destFloor
+    mov secdest,cl
+    mov destFloor,1
+
+y8:
+    mov cl,destFloor
+    cmp cl,02
+    jnz y9
+
+y10:
+    cmp ah,00
+    jnz y10
+    mov destFloor,01
+    mov doorState,01
+    mov direction,00
+    mov liftMove,01
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+y7:
+    cmp ah,00
+    jnz y7
+    jmp y6
+
+y6:
+    cmp al,01
+    jnz y11
+    mov doorState,00
+    pop cx
+    pop bx
+    pop ax
+    ret
+down1 endp
+
+
+up2 proc near
+    push ax
+    push bx
+    push cx
+    mov al, currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    mov bh,direction
+    cmp al,02
+    jnz up2y3
+    cmp ah,01
+    jnz up2y4
+
+up2y5: cmp ah,01
+    jz up2y5
+
+up2y11:
+    mov destFloor,02
+    mov doorState,01
+    mov liftMove,01
+    cmp ah,03
+    jnz up2y12
+    mov direction,00
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+up2y12:
+    mov direction,01
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+up2y4:
+    mov doorState,00
+    pop cx
+    pop bx
+    pop ax
+    ret
+    
+up2y3: 
+    cmp ah,01
+    jnz up2y6
+    cmp bh,1
+    jnz up2y7
+    cmp al,1
+    jnz up2y8
+
+up2y9:
+    mov cl,destFloor
+    mov secdest,cl
+    mov destFloor,2
+
+up2y8:
+    mov cl,destFloor
+    cmp cl,01
+    jnz up2y9
+
+up2y10:
+    cmp ah,00
+    jnz up2y10
+    mov destFloor,02
+    mov doorState,01
+    mov direction,01
+    mov liftMove,01
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+up2y7:
+    cmp ah,00
+    jnz up2y7
+    jmp up2y6
+
+up2y6:
+    cmp al,02
+    jnz up2y11
+    mov doorState,00
+    pop cx
+    pop bx
+    pop ax
+    ret
+up2 endp
+
+
+up1 proc near
+    push ax
+    push bx
+    push cx
+    mov al, currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    mov bh,direction
+    cmp al,01
+    jnz up1y3
+    cmp ah,01
+    jnz up1y4
+
+up1y5: cmp ah,01
+    jz up1y5
+
+up1y11:
+    mov destFloor,01
+    mov doorState,01
+    mov liftMove,01
+    cmp ah,00
+    jnz up1y12
+    mov direction,01
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+up1y12:
+    mov direction,00
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+up1y4:
+    mov doorState,00
+    pop cx
+    pop bx
+    pop ax
+    ret
+    
+up1y3: 
+    cmp ah,01
+    jnz up1y6
+    cmp bh,1
+    jnz up1y7
+
+up1y9:
+    mov cl,destFloor
+    mov secdest,cl
+    mov destFloor,1
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+up1y7:
+    cmp ah,00
+    jnz up1y7
+    jmp up1y6
+
+up1y6:
+    cmp al,01
+    jnz up1y11
+    mov doorState,00
+    pop cx
+    pop bx
+    pop ax
+    ret
+up1 endp
+
+
+down3 proc near
+    push ax
+    push bx
+    mov al, currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    cmp al,03
+    jnz dn3y2
+    cmp ah,00
+    jnz dn3y2
+
+dn3y1:    
+    mov doorState, 00h
+    pop bx
+    pop ax
+    ret
+
+dn3y2:
+    cmp ah,00
+    jnz dn3y2
+    cmp al,03
+    jz dn3y1
+    mov destFloor,00
+    mov direction,00
+    mov doorState,01
+    mov liftMove,01
+    call liftstar
+    pop bx
+    pop ax
+    ret
+down3 endp
+
+down2 proc near
+    push ax
+    push bx
+    push cx
+    mov al, currentFloor
+    mov ah, liftMove
+    mov bl, doorState
+    mov bh,direction
+    cmp al,02
+    jnz dn2y3
+    cmp ah,01
+    jnz dn2y4
+
+dn2y5: cmp ah,01
+    jz dn2y5
+
+dn2y11:
+    mov destFloor,01
+    mov doorState,01
+    mov liftMove,01
+    cmp ah,03
+    jnz dn2y12
+    mov direction,00
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+dn2y12:
+    mov direction,01
+    call liftstar
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+dn2y4:
+    mov doorState,00
+    pop cx
+    pop bx
+    pop ax
+    ret
+    
+dn2y3: 
+    cmp ah,01
+    jnz dn2y6
+    cmp bh,1
+    jnz dn2y7
+
+dn2y9:
+    mov cl,destFloor
+    mov secdest,cl
+    mov destFloor,1
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+dn2y7:
+    cmp ah,00
+    jnz dn2y7
+    jmp dn2y6
+
+dn2y6:
+    cmp al,02
+    jnz dn2y11
+    mov doorState,00
+    pop cx
+    pop bx
+    pop ax
+    ret
+down2 endp
+
+
+; subroutine when lift0 is pressed
+lift0 proc near
+    push ax
+    cmp currentFloor, 0
+    jz a1
+    mov destFloor, 0
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+
+    ; check if lift is moving or not
+a2: cmp liftMove, 1
+    jz a2
+
+    ; secdest = 0 OR secdest = dest
+a1: mov ah, 0
+    mov al, secDest
+    cmp secDest, 0
+    jz a3
+    inc ah
+    cmp al, destFloor
+    jz a3
+    inc ah
+    cmp ah, 0
+    jge a4
+
+    ; secdest > dest
+a4: mov al, secDest
+    cmp al, destFloor
+    jg a5
+    mov destFloor, al
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    jmp a6
+
+a5: mov destFloor, al
+    mov direction, 1
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+
+a6: cmp, liftMove, 1
+    jz a6
+
+a3: mov destFloor, 0
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    pop ax
+    ret
+lift0 endp
+
+
+; subroutine when lift1 is pressed
+lift1 proc near
+    push ax
+    cmp currentFloor, 1
+    jz b1
+
+    ; check if current floor = 0
+    cmp currentFloor, 0
+    jz b2
+    mov destFloor, 1
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    jmp b3
+
+b2: mov destFloor, 1
+    mov direction, 1
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+
+    ; check if lift is moving or not
+b3: cmp liftMove, 1
+    jz b3
+
+    ; secdest = 0 OR secdest = dest
+b1: mov ah, 0
+    mov al, secDest
+    cmp secDest, 0
+    jz b4
+    inc ah
+    cmp al, destFloor
+    jz b4
+    inc ah
+    cmp ah, 0
+    jge b5
+
+    ; secdest > dest
+b5: mov al, secDest
+    cmp al, destFloor
+    jg b6
+    mov destFloor, al
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    jmp b7
+
+b6: mov destFloor, al
+    mov direction, 1
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+
+b7: cmp, liftMove, 1
+    jz b7
+
+b4: mov destFloor, 0
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    pop ax
+    ret
+lift1 endp
+
+
+; subroutine when lift2 is pressed
+lift2 proc near
+    push ax
+    cmp currentFloor, 2
+    jz c1
+
+    ; check if current floor = 3
+    cmp currentFloor, 3
+    jz c2
+    mov destFloor, 2
+    mov direction, 1
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    jmp c3
+
+c2: mov destFloor, 2
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+
+    ; check if lift is moving or not
+c3: cmp liftMove, 1
+    jz c3
+
+    ; secdest = 0 OR secdest = dest
+c1: mov ah, 0
+    mov al, secDest
+    cmp secDest, 0
+    jz c4
+    inc ah
+    cmp al, destFloor
+    jz c4
+    inc ah
+    cmp ah, 0
+    jge c5
+
+    ; secdest > dest
+c5: mov al, secDest
+    cmp al, destFloor
+    jg c6
+    mov destFloor, al
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    jmp c7
+
+c6: mov destFloor, al
+    mov direction, 1
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+
+c7: cmp, liftMove, 1
+    jz c7
+
+c4: mov destFloor, 0
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    pop ax
+    ret
+lift2 endp
+
+
+; subroutine when lift3 is pressed
+lift3 proc near
+    push ax
+    cmp currentFloor, 3
+    jz d1
+    mov destFloor, 3
+    mov direction, 1
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+
+    ; check if lift is moving or not
+d2: cmp liftMove, 1
+    jz d2
+
+    ; secdest = 0 OR secdest = dest
+d1: mov ah, 0
+    mov al, secDest
+    cmp secDest, 0
+    jz d3
+    inc ah
+    cmp al, destFloor
+    jz d3
+    inc ah
+    cmp ah, 0
+    jge d4
+
+    ; secdest > dest
+d4: mov al, secDest
+    cmp al, destFloor
+    jg d5
+    mov destFloor, al
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    jmp d6
+
+d5: mov destFloor, al
+    mov direction, 1
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+
+d6: cmp, liftMove, 1
+    jz d6
+
+d3: mov destFloor, 0
+    mov direction, 0
+    mov liftMove, 1
+    call liftstar
+    mov doorState, 1
+    pop ax
+    ret
+lift3 endp
+
+
+; subroutine when doorClose is called
+doorClose proc near
+    mov doorState, 1
+doorClose endp
+
+    
+
+    
     		
     	
 
