@@ -357,6 +357,9 @@ infiloop: jmp infiloop
         call ledDisp
         mov liftMove, 00h
         mov drState, 00h
+        mov AL, 04h
+        out bsrcreg, AL
+
         pop bx
         pop ax
         iret
@@ -371,6 +374,8 @@ infiloop: jmp infiloop
         call ledDisp
         mov liftMove, 00h
         mov drState, 00h
+        mov AL, 04h
+        out bsrcreg, AL
         pop bx
         pop ax
         iret
@@ -413,6 +418,8 @@ up0 proc near
     
 y1:    
     mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
     pop bx
     pop ax
     ret
@@ -424,7 +431,13 @@ y2:
     jz y1
     mov dest, 00
     mov dir, 00
-    mov drState, 01
+    mov AL, 02h
+    out bsrcreg,al
+
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     mov liftMove, 01
     call liftstar
     pop bx
@@ -451,11 +464,16 @@ y5: cmp ah, 01
 
 y11:
     mov dest, 01
-    mov drState, 01
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     mov liftMove, 01
     cmp ah, 00
     jnz y12
     mov dir, 01
+    mov al,03H
+    out bsrcreg,al
     call liftstar
     pop cx
     pop bx
@@ -464,6 +482,9 @@ y11:
 
 y12:
     mov dir, 00
+    mov AL, 02h
+    out bsrcreg,al
+
     call liftstar
     pop cx
     pop bx
@@ -471,7 +492,10 @@ y12:
     ret
 
 y4:
-    mov drState, 00
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     pop cx
     pop bx
     pop ax
@@ -499,7 +523,10 @@ y10:
     cmp ah, 00
     jnz y10
     mov dest, 01
-    mov drState, 01
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     mov dir,00
     mov liftMove, 01
     call liftstar
@@ -516,7 +543,10 @@ y7:
 y6:
     cmp al, 01
     jnz y11
-    mov drState, 00
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     pop cx
     pop bx
     pop ax
@@ -542,11 +572,17 @@ up2y5: cmp ah, 01
 
 up2y11:
     mov dest, 02
-    mov drState, 01
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     mov liftMove, 01
     cmp ah, 03
     jnz up2y12
     mov dir, 00
+    mov AL, 02h
+    out bsrcreg,al
+
     call liftstar
     pop cx
     pop bx
@@ -555,6 +591,8 @@ up2y11:
 
 up2y12:
     mov dir, 01
+    mov al,03H
+    out bsrcreg,al
     call liftstar
     pop cx
     pop bx
@@ -562,7 +600,10 @@ up2y12:
     ret
 
 up2y4:
-    mov drState, 00
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     pop cx
     pop bx
     pop ax
@@ -590,8 +631,13 @@ up2y10:
     cmp ah, 00
     jnz up2y10
     mov dest, 02
-    mov drState, 01
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     mov dir, 01
+    mov al,03H
+    out bsrcreg,al
     mov liftMove, 01
     call liftstar
     pop cx
@@ -607,7 +653,10 @@ up2y7:
 up2y6:
     cmp al, 02
     jnz up2y11
-    mov drState, 00
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     pop cx
     pop bx
     pop ax
@@ -633,11 +682,16 @@ up1y5: cmp ah, 01
 
 up1y11:
     mov dest, 01
-    mov drState, 01
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     mov liftMove, 01
     cmp ah, 00
     jnz up1y12
     mov dir, 01
+    mov al,03H
+    out bsrcreg,al
     call liftstar
     pop cx
     pop bx
@@ -646,6 +700,9 @@ up1y11:
 
 up1y12:
     mov dir, 00
+    mov AL, 02h
+    out bsrcreg,al
+
     call liftstar
     pop cx
     pop bx
@@ -653,7 +710,10 @@ up1y12:
     ret
 
 up1y4:
-    mov drState, 00
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     pop cx
     pop bx
     pop ax
@@ -682,7 +742,10 @@ up1y7:
 up1y6:
     cmp al, 01
     jnz up1y11
-    mov drState, 00
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     pop cx
     pop bx
     pop ax
@@ -703,6 +766,8 @@ down3 proc near
 
 dn3y1:    
     mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
     pop bx
     pop ax
     ret
@@ -714,7 +779,13 @@ dn3y2:
     jz dn3y1
     mov dest, 00
     mov dir, 00
-    mov drState, 01
+    mov AL, 02h
+    out bsrcreg,al
+
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     mov liftMove, 01
     call liftstar
     pop bx
@@ -740,11 +811,17 @@ dn2y5: cmp ah, 01
 
 dn2y11:
     mov dest, 01
-    mov drState, 01
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     mov liftMove, 01
     cmp ah, 03
     jnz dn2y12
     mov dir, 00
+    mov AL, 02h
+    out bsrcreg,al
+
     call liftstar
     pop cx
     pop bx
@@ -753,6 +830,8 @@ dn2y11:
 
 dn2y12:
     mov dir, 01
+    mov al,03H
+    out bsrcreg,al
     call liftstar
     pop cx
     pop bx
@@ -760,7 +839,10 @@ dn2y12:
     ret
 
 dn2y4:
-    mov drState, 00
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     pop cx
     pop bx
     pop ax
@@ -789,7 +871,10 @@ dn2y7:
 dn2y6:
     cmp al, 02
     jnz dn2y11
-    mov drState, 00
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     pop cx
     pop bx
     pop ax
@@ -805,8 +890,12 @@ lift0 proc near
     mov dest, 0
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
 
     ; check if lift is moving or not
 a2: cmp liftMove, 1
@@ -831,15 +920,26 @@ a4: mov al, secDest
     mov dest, al
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     jmp a6
 
 a5: mov dest, al
-    mov dir, 1
+    mov dir, 01h
+    mov AL, 03h
+    out bsrcreg, AL
+
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
 
 a6: cmp liftMove, 1
     jz a6
@@ -847,8 +947,12 @@ a6: cmp liftMove, 1
 a3: mov dest, 0
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     pop ax
     ret
 lift0 endp
@@ -866,15 +970,26 @@ lift1 proc near
     mov dest, 1
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     jmp b3
 
 b2: mov dest, 1
-    mov dir, 1
+    mov dir, 01h
+    mov AL, 03h
+    out bsrcreg, AL
+
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
 
     ; check if lift is moving or not
 b3: cmp liftMove, 1
@@ -899,15 +1014,26 @@ b5: mov al, secDest
     mov dest, al
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     jmp b7
 
 b6: mov dest, al
-    mov dir, 1
+    mov dir, 01h
+    mov AL, 03h
+    out bsrcreg, AL
+
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
 
 b7: cmp liftMove, 1
     jz b7
@@ -915,8 +1041,12 @@ b7: cmp liftMove, 1
 b4: mov dest, 0
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     pop ax
     ret
 lift1 endp
@@ -932,17 +1062,28 @@ lift2 proc near
     cmp current, 3
     jz c2
     mov dest, 2
-    mov dir, 1
+    mov dir, 01h
+    mov AL, 03h
+    out bsrcreg, AL
+
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     jmp c3
 
 c2: mov dest, 2
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
 
     ; check if lift is moving or not
 c3: cmp liftMove, 1
@@ -967,15 +1108,26 @@ c5: mov al, secDest
     mov dest, al
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     jmp c7
 
 c6: mov dest, al
-    mov dir, 1
+    mov dir, 01h
+    mov AL, 03h
+    out bsrcreg, AL
+
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
 
 c7: cmp liftMove, 1
     jz c7
@@ -983,8 +1135,12 @@ c7: cmp liftMove, 1
 c4: mov dest, 0
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     pop ax
     ret
 lift2 endp
@@ -996,10 +1152,17 @@ lift3 proc near
     cmp current, 3
     jz d1
     mov dest, 3
-    mov dir, 1
+    mov dir, 01h
+    mov AL, 03h
+    out bsrcreg, AL
+
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
 
     ; check if lift is moving or not
 d2: cmp liftMove, 1
@@ -1024,15 +1187,26 @@ d4: mov al, secDest
     mov dest, al
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     jmp d6
 
 d5: mov dest, al
-    mov dir, 1
+    mov dir, 01h
+    mov AL, 03h
+    out bsrcreg, AL
+
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
 
 d6: cmp liftMove, 1
     jz d6
@@ -1040,8 +1214,12 @@ d6: cmp liftMove, 1
 d3: mov dest, 0
     mov dir, 0
     mov liftMove, 1
+    mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
+
     call liftstar
-    mov drState, 1
+    
     pop ax
     ret
 lift3 endp
@@ -1049,7 +1227,9 @@ lift3 endp
 
 ; subroutine when drClose is called
 drClose proc near
-    mov drState, 1
+    mov drState, 01h
+
+
 drClose endp
 
 
