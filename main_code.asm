@@ -355,10 +355,11 @@ infiloop: jmp infiloop
         jnz f1
         call decel20
         call ledDisp
-        mov liftMove, 00h
         mov drState, 00h
         mov AL, 04h
         out bsrcreg, AL
+        mov liftMove, 00h
+        
 
         pop bx
         pop ax
@@ -372,10 +373,10 @@ infiloop: jmp infiloop
         jnz f1
         call decel20
         call ledDisp
-        mov liftMove, 00h
         mov drState, 00h
         mov AL, 04h
         out bsrcreg, AL
+        mov liftMove, 00h
         pop bx
         pop ax
         iret
