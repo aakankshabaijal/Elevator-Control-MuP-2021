@@ -1,4 +1,4 @@
-up_0 proc near
+up0 proc near
     push ax
     push bx
     mov al, currentFloor
@@ -8,11 +8,13 @@ up_0 proc near
     jnz y2
     cmp ah,00
     jnz y2
+    
 y1:    
     mov doorState, 00h
     pop bx
     pop ax
     ret
+
 y2:
     cmp ah,00
     jnz y2
@@ -26,9 +28,10 @@ y2:
     pop bx
     pop ax
     ret
+up0 endp
 
 
-down_1 proc near
+down1 proc near
     push ax
     push bx
     push cx
@@ -38,10 +41,12 @@ down_1 proc near
     mov bh,direction
     cmp al,01
     jnz y3
-    cmp lm,01
+    cmp ah,01
     jnz y4
-y5: cmp lm,01
+
+y5: cmp ah,01
     jz y5
+
 y11:
     mov destFloor,01
     mov doorState,01
@@ -54,6 +59,7 @@ y11:
     pop bx
     pop ax
     ret
+
 y12:
     mov direction,00
     call liftstar
@@ -61,8 +67,6 @@ y12:
     pop bx
     pop ax
     ret
-
-    
 
 y4:
     mov doorState,00
@@ -78,16 +82,17 @@ y3:
     jnz y7
     cmp al,2
     jnz y8
+
 y9:
     mov cl,destFloor
     mov secdest,cl
     mov destFloor,1
 
-
 y8:
     mov cl,destFloor
     cmp cl,02
     jnz y9
+
 y10:
     cmp ah,00
     jnz y10
@@ -100,7 +105,6 @@ y10:
     pop bx
     pop ax
     ret
-
 
 y7:
     cmp ah,00
@@ -115,8 +119,10 @@ y6:
     pop bx
     pop ax
     ret
+down1 endp
 
-up_2 proc near
+
+up2 proc near
     push ax
     push bx
     push cx
@@ -126,10 +132,12 @@ up_2 proc near
     mov bh,direction
     cmp al,02
     jnz up2y3
-    cmp lm,01
+    cmp ah,01
     jnz up2y4
-up2y5: cmp lm,01
+
+up2y5: cmp ah,01
     jz up2y5
+
 up2y11:
     mov destFloor,02
     mov doorState,01
@@ -142,6 +150,7 @@ up2y11:
     pop bx
     pop ax
     ret
+
 up2y12:
     mov direction,01
     call liftstar
@@ -149,8 +158,6 @@ up2y12:
     pop bx
     pop ax
     ret
-
-    
 
 up2y4:
     mov doorState,00
@@ -166,16 +173,17 @@ up2y3:
     jnz up2y7
     cmp al,1
     jnz up2y8
+
 up2y9:
     mov cl,destFloor
     mov secdest,cl
     mov destFloor,2
 
-
 up2y8:
     mov cl,destFloor
     cmp cl,01
     jnz up2y9
+
 up2y10:
     cmp ah,00
     jnz up2y10
@@ -188,7 +196,6 @@ up2y10:
     pop bx
     pop ax
     ret
-
 
 up2y7:
     cmp ah,00
@@ -203,8 +210,10 @@ up2y6:
     pop bx
     pop ax
     ret
+up2 endp
 
-up_1 proc near
+
+up1 proc near
     push ax
     push bx
     push cx
@@ -214,10 +223,12 @@ up_1 proc near
     mov bh,direction
     cmp al,01
     jnz up1y3
-    cmp lm,01
+    cmp ah,01
     jnz up1y4
-up1y5: cmp lm,01
+
+up1y5: cmp ah,01
     jz up1y5
+
 up1y11:
     mov destFloor,01
     mov doorState,01
@@ -230,6 +241,7 @@ up1y11:
     pop bx
     pop ax
     ret
+
 up1y12:
     mov direction,00
     call liftstar
@@ -250,6 +262,7 @@ up1y3:
     jnz up1y6
     cmp bh,1
     jnz up1y7
+
 up1y9:
     mov cl,destFloor
     mov secdest,cl
@@ -272,8 +285,10 @@ up1y6:
     pop bx
     pop ax
     ret
+up1 endp
 
-down_3 proc near
+
+down3 proc near
     push ax
     push bx
     mov al, currentFloor
@@ -283,11 +298,13 @@ down_3 proc near
     jnz dn3y2
     cmp ah,00
     jnz dn3y2
+
 dn3y1:    
     mov doorState, 00h
     pop bx
     pop ax
     ret
+
 dn3y2:
     cmp ah,00
     jnz dn3y2
@@ -301,8 +318,9 @@ dn3y2:
     pop bx
     pop ax
     ret
+down3 endp
 
-down_2 proc near
+down2 proc near
     push ax
     push bx
     push cx
@@ -312,10 +330,12 @@ down_2 proc near
     mov bh,direction
     cmp al,02
     jnz dn2y3
-    cmp lm,01
+    cmp ah,01
     jnz dn2y4
-dn2y5: cmp lm,01
+
+dn2y5: cmp ah,01
     jz dn2y5
+
 dn2y11:
     mov destFloor,01
     mov doorState,01
@@ -328,6 +348,7 @@ dn2y11:
     pop bx
     pop ax
     ret
+
 dn2y12:
     mov direction,01
     call liftstar
@@ -348,6 +369,7 @@ dn2y3:
     jnz dn2y6
     cmp bh,1
     jnz dn2y7
+
 dn2y9:
     mov cl,destFloor
     mov secdest,cl
@@ -370,4 +392,5 @@ dn2y6:
     pop bx
     pop ax
     ret
+down2 endp
 
