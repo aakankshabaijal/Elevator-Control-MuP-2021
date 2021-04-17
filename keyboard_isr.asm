@@ -35,12 +35,7 @@ jmp st1
 
 ; table db 0eeh, 0edh, 0ebh, 0e7h, 0deh, 0ddh, 0dbh, 0d7h, 0beh, 0bdh, 0bbh, 0b7h, 7eh, 7dh
 
-liftMove db 0
-destFloor db 0
-secdest db 0
-direction db 0
-doorState db 0
-currentFloor db 0
+
 
 st1: 
     cli

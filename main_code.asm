@@ -75,8 +75,17 @@ st1: cli
     intloc1 equ 0A0h
     intloc2 equ 0A2h
 
-		bsrportc equ 0c4h
+	bsrportc equ 0c4h
     bsrcreg equ 0c6h
+
+
+    ; variables used
+    liftMove db 0
+    destFloor db 0
+    secdest db 0
+    direction db 0
+    doorState db 0
+    currentFloor db 0
 
     ; initializing timers
     ; first timer (chip 1) mode 3; write 16 bit value 61a8h; converts 2.5MHz into 100Hz
