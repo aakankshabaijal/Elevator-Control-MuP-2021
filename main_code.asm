@@ -69,7 +69,8 @@ st1: cli
     pwm equ 84h
     convcreg equ 86h
 
-    ostimer equ 90h
+    ostimer0 equ 90h
+    ostimer1 equ 92h
     oscreg equ 96h
 
     intloc1 equ 0A0h
@@ -119,7 +120,13 @@ st1: cli
     mov al, 00001000b
     out oscreg, al
     mov al, 01h
-    out ostimer, al
+    out ostimer0, al
+
+    ; second timer (chip 2) mode 1; write 8 bits value 20
+    mov al, 00001000b
+    out oscreg, al
+    mov al, 20
+    out ostimer1, al
     
     ; initializing 8255
     ; port A output from 8255; for showing current floor value in LED
@@ -409,38 +416,53 @@ infiloop: jmp infiloop
 up0 proc near
     push ax
     push bx
+    push cx
+
     mov al, current
     mov ah, liftMove
     mov bl, drState
+
     cmp al,00
     jnz y2
+
     cmp ah,00
     jnz y2
     
+
 y1:    
     mov drState, 00h
     mov AL, 04h
     out bsrcreg, AL
+
+    pop cx
     pop bx
     pop ax
     ret
 
+
 y2:
     cmp ah, 00
     jnz y2
+
     cmp al, 00
     jz y1
+
     mov dest, 00
     mov dir, 00
     mov AL, 02h
     out bsrcreg,al
-
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q1: cmp cl, 1
+    jne q1
+
     mov liftMove, 01
     call liftstar
+
+    pop cx
     pop bx
     pop ax
     ret
@@ -451,46 +473,81 @@ down1 proc near
     push ax
     push bx
     push cx
+
     mov al, current
     mov ah, liftMove
     mov bl, drState
     mov bh, dir
+
     cmp al, 01
     jnz y3
+
     cmp ah, 01
     jnz y4
+
 
 y5: cmp ah, 01
     jz y5
 
+
 y11:
     mov dest, 01
+    mov dir, 00
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q8: cmp cl, 1
+    jne q8
+
     mov liftMove, 01
+    call liftstar
+
     cmp ah, 00
     jnz y12
+
     mov dir, 01
     mov al,03H
     out bsrcreg,al
+
+    mov cl, 0
+q2: cmp cl, 1
+    jne q2
+
+    mov liftMove, 1
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
 
+
 y12:
+    mov drState, 00h
+    mov AL, 04h
+    out bsrcreg, AL
+
     mov dir, 00
     mov AL, 02h
     out bsrcreg,al
 
+    mov cl, 0
+q3: cmp cl, 1
+    jne q3
+
+    mov liftMove, 01
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 y4:
     mov drState, 00h
@@ -505,48 +562,76 @@ y4:
 y3: 
     cmp ah, 01
     jnz y6
+
     cmp bh, 0
     jnz y7
+
     cmp al, 2
     jnz y8
+
 
 y9:
     mov cl, dest
     mov secdest, cl
     mov dest,1
 
+
 y8:
     mov cl, dest
     cmp cl, 02
     jnz y9
 
+
 y10:
     cmp ah, 00
     jnz y10
+
     mov dest, 01
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
-    mov dir,00
+    mov dir, 00
+    mov AL, 02h
+    out bsrcreg,al
+
+    mov cl, 0
+q4: cmp cl, 1
+    jne q4
+
     mov liftMove, 01
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 y7:
     cmp ah, 00
     jnz y7
     jmp y6
 
+
 y6:
     cmp al, 01
     jnz y11
+
+    mov dir, 00
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 00h
     mov AL, 04h
     out bsrcreg, AL
+
+    mov cl, 0
+q9: cmp cl, 1
+    jne q9
+
+    mov liftMove, 01
+    call liftstar
 
     pop cx
     pop bx
@@ -559,17 +644,22 @@ up2 proc near
     push ax
     push bx
     push cx
+
     mov al, current
     mov ah, liftMove
     mov bl, drState
     mov bh, dir
+
     cmp al, 02
     jnz up2y3
+
     cmp ah, 01
     jnz up2y4
 
+
 up2y5: cmp ah, 01
-    jz up2y5
+    jz up2y5 
+
 
 up2y11:
     mov dest, 02
@@ -577,28 +667,43 @@ up2y11:
     mov AL, 05h
     out bsrcreg, AL
 
-    mov liftMove, 01
-    cmp ah, 03
+    cmp al, 03
     jnz up2y12
+
     mov dir, 00
     mov AL, 02h
     out bsrcreg,al
+    
+    mov cl, 0
+q5: cmp cl, 1
+    jne q5
 
+    mov liftMove, 01
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 up2y12:
     mov dir, 01
     mov al,03H
     out bsrcreg,al
+
+    mov cl, 0
+q6: cmp cl, 1
+    jne q6
+
+    mov liftMove, 01
     call liftstar
+     
     pop cx
     pop bx
     pop ax
     ret
+
 
 up2y4:
     mov drState, 00h
@@ -610,27 +715,34 @@ up2y4:
     pop ax
     ret
     
+
 up2y3: 
     cmp ah, 01
     jnz up2y6
+
     cmp bh, 1
     jnz up2y7
+
     cmp al, 1
     jnz up2y8
+
 
 up2y9:
     mov cl, dest
     mov secdest, cl
     mov dest, 2
 
+
 up2y8:
     mov cl, dest
     cmp cl, 01
     jnz up2y9
 
+
 up2y10:
-    cmp ah, 00
-    jnz up2y10
+    cmp ah, 01
+    jz up2y10
+
     mov dest, 02
     mov drState, 01h
     mov AL, 05h
@@ -639,21 +751,31 @@ up2y10:
     mov dir, 01
     mov al,03H
     out bsrcreg,al
+
+    mov cl, 0
+q7: cmp cl, 1
+    jne q7
+
     mov liftMove, 01
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
 
+
 up2y7:
-    cmp ah, 00
-    jnz up2y7
+    cmp ah, 01
+    jz up2y7
+
     jmp up2y6
+
 
 up2y6:
     cmp al, 02
     jnz up2y11
+
     mov drState, 00h
     mov AL, 04h
     out bsrcreg, AL
@@ -669,17 +791,22 @@ up1 proc near
     push ax
     push bx
     push cx
+
     mov al, current
     mov ah, liftMove
     mov bl, drState
     mov bh, dir
+
     cmp al, 01
     jnz up1y3
+
     cmp ah, 01
     jnz up1y4
 
+
 up1y5: cmp ah, 01
     jz up1y5
+
 
 up1y11:
     mov dest, 01
@@ -687,28 +814,43 @@ up1y11:
     mov AL, 05h
     out bsrcreg, AL
 
-    mov liftMove, 01
     cmp ah, 00
     jnz up1y12
+
     mov dir, 01
     mov al,03H
     out bsrcreg,al
+
+    mov cl, 0
+q10:cmp cl, 1
+    jne q10
+
+    mov liftMove, 01
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 up1y12:
     mov dir, 00
     mov AL, 02h
     out bsrcreg,al
 
+    mov cl, 0
+q11:cmp cl, 1
+    jne q11
+
+    mov liftMove, 01
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 up1y4:
     mov drState, 00h
@@ -720,29 +862,36 @@ up1y4:
     pop ax
     ret
     
+
 up1y3: 
     cmp ah, 01
     jnz up1y6
+
     cmp bh, 1
     jnz up1y7
+
 
 up1y9:
     mov cl, dest
     mov secdest, cl
     mov dest, 1
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 up1y7:
     cmp ah, 00
     jnz up1y7
     jmp up1y6
 
+
 up1y6:
     cmp al, 01
     jnz up1y11
+
     mov drState, 00h
     mov AL, 04h
     out bsrcreg, AL
@@ -757,27 +906,37 @@ up1 endp
 down3 proc near
     push ax
     push bx
+    push cx
+
     mov al, current
     mov ah, liftMove
     mov bl, drState
+
     cmp al, 03
     jnz dn3y2
+
     cmp ah, 00
     jnz dn3y2
+
 
 dn3y1:    
     mov drState, 00h
     mov AL, 04h
     out bsrcreg, AL
+
+    pop cx
     pop bx
     pop ax
     ret
 
+
 dn3y2:
     cmp ah, 00
     jnz dn3y2
+
     cmp al, 03
     jz dn3y1
+
     mov dest, 00
     mov dir, 00
     mov AL, 02h
@@ -787,8 +946,14 @@ dn3y2:
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q12:cmp cl, 1
+    jne q12
+
     mov liftMove, 01
     call liftstar
+
+    pop cx
     pop bx
     pop ax
     ret
@@ -798,17 +963,22 @@ down2 proc near
     push ax
     push bx
     push cx
+
     mov al, current
     mov ah, liftMove
     mov bl, drState
     mov bh, dir
+
     cmp al, 02
     jnz dn2y3
+
     cmp ah, 01
     jnz dn2y4
 
+
 dn2y5: cmp ah, 01
     jz dn2y5
+
 
 dn2y11:
     mov dest, 01
@@ -816,28 +986,50 @@ dn2y11:
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q13:cmp cl, 1
+    jne q13
+
     mov liftMove, 01
+    call liftstar
+
     cmp ah, 03
     jnz dn2y12
+
     mov dir, 00
     mov AL, 02h
     out bsrcreg,al
 
+    mov cl, 0
+q14:cmp cl, 1
+    jne q14
+
+    mov liftMove, 01
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 dn2y12:
     mov dir, 01
     mov al,03H
     out bsrcreg,al
+
+    mov cl, 0
+q15:cmp cl, 1
+    jne q15
+
+    mov liftMove, 01
     call liftstar
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 dn2y4:
     mov drState, 00h
@@ -849,29 +1041,35 @@ dn2y4:
     pop ax
     ret
     
+
 dn2y3: 
     cmp ah, 01
     jnz dn2y6
     cmp bh, 1
     jnz dn2y7
 
+
 dn2y9:
     mov cl, dest
     mov secdest, cl
     mov dest, 1
+
     pop cx
     pop bx
     pop ax
     ret
+
 
 dn2y7:
     cmp ah, 00
     jnz dn2y7
     jmp dn2y6
 
+
 dn2y6:
     cmp al, 02
     jnz dn2y11
+
     mov drState, 00h
     mov AL, 04h
     out bsrcreg, AL
@@ -886,15 +1084,25 @@ down2 endp
 ; subroutine when lift0 is pressed
 lift0 proc near
     push ax
+    push cx
+
     cmp current, 0
     jz a1
+
     mov dest, 0
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q16:cmp cl, 1
+    jne q16
+
+    mov liftMove, 1
     call liftstar
     
 
@@ -902,58 +1110,83 @@ lift0 proc near
 a2: cmp liftMove, 1
     jz a2
 
+
     ; secdest = 0 OR secdest = dest
 a1: mov ah, 0
     mov al, secDest
     cmp secDest, 0
     jz a3
+
     inc ah
     cmp al, dest
     jz a3
+
     inc ah
     cmp ah, 0
     jge a4
+
 
     ; secdest > dest
 a4: mov al, secDest
     cmp al, dest
     jg a5
+
     mov dest, al
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q17:cmp cl, 1
+    jne q17
+
+    mov liftMove, 1
     call liftstar
-    
     jmp a6
+
 
 a5: mov dest, al
     mov dir, 01h
     mov AL, 03h
     out bsrcreg, AL
 
-    mov liftMove, 1
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q18:cmp cl, 1
+    jne q18
+
+    mov liftMove, 1
     call liftstar
     
 
 a6: cmp liftMove, 1
     jz a6
 
+
 a3: mov dest, 0
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q19:cmp cl, 1
+    jne q19
+
+    mov liftMove, 01
     call liftstar
     
+    pop cx
     pop ax
     ret
 lift0 endp
@@ -968,27 +1201,40 @@ lift1 proc near
     ; check if current floor = 0
     cmp current, 0
     jz b2
+
     mov dest, 1
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q20:cmp cl, 1
+    jne q20
+
+    mov liftMove, 01
     call liftstar
     
     jmp b3
+
 
 b2: mov dest, 1
     mov dir, 01h
     mov AL, 03h
     out bsrcreg, AL
 
-    mov liftMove, 1
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q21:cmp cl, 1
+    jne q21
+
+    mov liftMove, 01
     call liftstar
     
 
@@ -996,58 +1242,84 @@ b2: mov dest, 1
 b3: cmp liftMove, 1
     jz b3
 
+
     ; secdest = 0 OR secdest = dest
 b1: mov ah, 0
     mov al, secDest
     cmp secDest, 0
     jz b4
+
     inc ah
     cmp al, dest
     jz b4
+
     inc ah
     cmp ah, 0
     jge b5
+
 
     ; secdest > dest
 b5: mov al, secDest
     cmp al, dest
     jg b6
+
     mov dest, al
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q22:cmp cl, 1
+    jne q22
+
+    mov liftMove, 01
     call liftstar
     
     jmp b7
+
 
 b6: mov dest, al
     mov dir, 01h
     mov AL, 03h
     out bsrcreg, AL
 
-    mov liftMove, 1
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q23:cmp cl, 1
+    jne q23
+
+    mov liftMove, 01
     call liftstar
     
 
 b7: cmp liftMove, 1
     jz b7
 
+
 b4: mov dest, 0
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q24:cmp cl, 1
+    jne q24
+
+    mov liftMove, 01
     call liftstar
     
+    pop cx
     pop ax
     ret
 lift1 endp
@@ -1056,33 +1328,48 @@ lift1 endp
 ; subroutine when lift2 is pressed
 lift2 proc near
     push ax
+    push cx 
+
     cmp current, 2
     jz c1
 
     ; check if current floor = 3
     cmp current, 3
     jz c2
+
     mov dest, 2
     mov dir, 01h
     mov AL, 03h
     out bsrcreg, AL
 
-    mov liftMove, 1
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q25:cmp cl, 1
+    jne q25
+
+    mov liftMove, 01
     call liftstar
     
     jmp c3
 
+
 c2: mov dest, 2
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q26:cmp cl, 1
+    jne q26
+
+    mov liftMove, 01
     call liftstar
     
 
@@ -1090,58 +1377,84 @@ c2: mov dest, 2
 c3: cmp liftMove, 1
     jz c3
 
+
     ; secdest = 0 OR secdest = dest
 c1: mov ah, 0
     mov al, secDest
     cmp secDest, 0
     jz c4
+
     inc ah
     cmp al, dest
     jz c4
+
     inc ah
     cmp ah, 0
     jge c5
+
 
     ; secdest > dest
 c5: mov al, secDest
     cmp al, dest
     jg c6
+
     mov dest, al
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q27:cmp cl, 1
+    jne q27
+
+    mov liftMove, 01
     call liftstar
     
     jmp c7
+
 
 c6: mov dest, al
     mov dir, 01h
     mov AL, 03h
     out bsrcreg, AL
 
-    mov liftMove, 1
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q28:cmp cl, 1
+    jne q28
+
+    mov liftMove, 01
     call liftstar
     
 
 c7: cmp liftMove, 1
     jz c7
 
+
 c4: mov dest, 0
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q29:cmp cl, 1
+    jne q29
+
+    mov liftMove, 01
     call liftstar
     
+    pop cx
     pop ax
     ret
 lift2 endp
@@ -1150,18 +1463,25 @@ lift2 endp
 ; subroutine when lift3 is pressed
 lift3 proc near
     push ax
+    push cx
+
     cmp current, 3
     jz d1
+
     mov dest, 3
     mov dir, 01h
     mov AL, 03h
     out bsrcreg, AL
 
-    mov liftMove, 1
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q30:cmp cl, 1
+    jne q30
+
+    mov liftMove, 01
     call liftstar
     
 
@@ -1169,58 +1489,84 @@ lift3 proc near
 d2: cmp liftMove, 1
     jz d2
 
+
     ; secdest = 0 OR secdest = dest
 d1: mov ah, 0
     mov al, secDest
     cmp secDest, 0
     jz d3
+
     inc ah
     cmp al, dest
     jz d3
+
     inc ah
     cmp ah, 0
     jge d4
+
 
     ; secdest > dest
 d4: mov al, secDest
     cmp al, dest
     jg d5
+
     mov dest, al
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q31:cmp cl, 1
+    jne q31
+
+    mov liftMove, 01
     call liftstar
     
     jmp d6
+
 
 d5: mov dest, al
     mov dir, 01h
     mov AL, 03h
     out bsrcreg, AL
 
-    mov liftMove, 1
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q32:cmp cl, 1
+    jne q32
+
+    mov liftMove, 01
     call liftstar
     
 
 d6: cmp liftMove, 1
     jz d6
 
+
 d3: mov dest, 0
     mov dir, 0
-    mov liftMove, 1
+    mov al, 02h
+    out bsrcreg, al
+
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
 
+    mov cl, 0
+q33:cmp cl, 1
+    jne q33
+
+    mov liftMove, 01
     call liftstar
     
+    pop cx
     pop ax
     ret
 lift3 endp
@@ -1228,23 +1574,40 @@ lift3 endp
 
 ; subroutine when drClose is called
 drClose proc near
+    push ax
+
     mov drState, 01h
+    mov AL, 05h
+    out bsrcreg, AL
 
-
+    pop ax
+    ret
 drClose endp
 
 
 ; LED display logic
 ledDisp proc near
     push ax
-    push cx
+
     mov al, current
-    mov ah, dest
-    mov cl, 04
-    ror ah, cl
-    or al, ah
+    out porta, al
+
+    cmp liftMove, 01
+    jnz e1
+
     out portb, al
-    pop cx
+    
+
+e1: cmp dir, 00
+    jnz e2
+
+    dec al
+    out portb, al
+
+
+e2: inc al
+    out portb, al
+
     pop ax
     ret
 ledDisp endp
@@ -1252,67 +1615,104 @@ ledDisp endp
 
 ; start and accelaration routine 0% to 40%
 liftstar proc near
+    push ax
+    push cx
+
     mov AL,08h ; for 20% duty cycle
     out pwm,AL
-    mov AL,00h ; first give a low on port C0 (bsr)
-    out porta,AL
-    mov AL,01h ; then give a high on port C0 (bsr) to trigger one shot timer
-    out porta,AL
+
+    mov AL,00h ; first give a low on port PC0 (bsr) (0000 000 0b)
+    out bsrcreg,AL
+
+    mov AL,01h ; then give a high on port PC0 (bsr) to trigger one shot timer (0000 000 1b)
+    out bsrcreg,AL
+
     mov CL,00h
 il1:cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
     jne il1
+
     mov AL,07h ; 30% duty cycle
     out pwm,AL
+
     mov AL,00h
-    out porta,AL
+    out bsrcreg,AL
+
     mov AL,01h
-    out porta,AL
+    out bsrcreg,AL
+
     mov CL,00h
 il2:cmp CL,01h ; infinite loop, waiting for ISR to set CL to 1
     jne il2
+
     mov AL,06h ; 40% duty cycle
     out pwm, AL
+
+    pop cx
+    pop ax
     ret
 liftstar endp
 
 
 ; accelaration to 50%
 accel50 proc near 
+    push ax
+
     mov AL,05h ; 50% duty cycle
     out pwm, AL
+
+    pop ax
     ret
 accel50 endp
 
 
 ; decelaration routine from 50% to 20%
 decel20 proc near 
+    push ax
+    push cx
+
     mov AL,06h ; 40%
     out pwm,AL
+
     mov AL,00h
-    out porta,AL
+    out bsrcreg,AL
+
     mov AL,01h
-    out porta,AL
+    out bsrcreg,AL
+
     mov CL,00h
 il3:cmp CL,01h
     jne il3
+
     mov AL,07h ; 30%
     out pwm,AL
+
     mov AL,00h
-    out porta,AL
+    out bsrcreg,AL
+
     mov AL,01h
-    out porta,AL
+    out bsrcreg,AL
+
     mov CL,00h
 il4:cmp CL,01h
     jne il4
+
     mov AL,08h ; 20%
     out pwm,AL
+
+    pop cx
+    pop ax
     ret 
 decel20 endp
 
 ; finally stop from 20% to 0
 liftstop proc near
+    push ax
+
     mov AL,0ah
     out pwm,AL
+
+    pop ax
+    ret
 liftstop endp
     
 
