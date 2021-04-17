@@ -1,4 +1,4 @@
-; sub program when coarse_sensor1 is pressed
+; interrupt when coarse_sensor1 is pressed
 coarse_sensor1:
     push ax
     push bx

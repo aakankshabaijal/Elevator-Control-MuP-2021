@@ -52,6 +52,7 @@ jmp st1
 
 liftMove db 0
 destFloor db 0
+secdest db 0
 direction db 0
 doorState db 0
 currentFloor db 0
@@ -120,7 +121,7 @@ x2: cmp al, 0edh
 
 x3: cmp al, 0ebh
     jnz x4
-    call fineSensor
+    call fineSensor;  change the fine sensor sub routine to manage if lift is stopped it should be on gnd floor
     jmp check_key
 
 x4: cmp al, 0e7h
@@ -180,7 +181,8 @@ x14:cmp al, 07dh
 
 
 ; subroutine for up0
-up0 proc near
+up0 proc near; corrected
+
     push ax
     push bx
     mov al, currentFloor
@@ -188,7 +190,8 @@ up0 proc near
     mov bl, doorState
     cmp al, 00h
     jnz lift_not_on_gnd_floor0
-
+    cmp ah,00
+    jnz lift_not_on_gnd_floor0
     mov doorState, 00h
     pop bx
     pop ax
@@ -196,14 +199,22 @@ up0 proc near
 
 lift_not_on_gnd_floor0:
     cmp ah, 01h
-    jnz lift_not_moving0
+    jnz lift_not_moving
+    cmp al,00
+    jnz change_dest_to_0
+    
     jmp lift_not_on_gnd_floor0
 
 lift_not_moving0:
-    cmp bl, 01h
-    jz door_closed0
-    jmp lift_not_moving0
-
+    cmp al,00
+    jnz x25
+    mov doorState, 00h
+    pop bx
+    pop ax
+    ret
+ x25:
+    mov doorState, 01
+    
 door_closed0:
     mov destFloor, 00h
     mov direction, 00h 
