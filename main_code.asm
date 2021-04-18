@@ -170,6 +170,7 @@ infiloop: jmp infiloop
     os_isr:
         mov al, 01100000b ; ocw 2 specific EOI for IR0
         out intloc1, al
+
         mov CL, 01h
         iret
     
@@ -181,6 +182,7 @@ infiloop: jmp infiloop
         ; check for key press
         mov al, 00h
         out portc, al
+
     x1: in al, portc
         and al, 0f0h
         cmp al, 0f0h
@@ -189,8 +191,10 @@ infiloop: jmp infiloop
         ; check for key press in column 1
         mov al, 0eh
         mov bl, al
+
         out portc, al
         in al, portc
+
         and al, 0f0h
         cmp al, 0f0h
         jnz check_key
@@ -198,8 +202,10 @@ infiloop: jmp infiloop
         ; check for key press in column 2
         mov al, 0dh
         mov bl, al
+
         out portc, al
         in al, portc
+
         and al, 0f0h
         cmp al, 0f0h
         jnz check_key
@@ -207,8 +213,10 @@ infiloop: jmp infiloop
         ; check for key press in column 3
         mov al, 0bh
         mov bl, al
+
         out portc, al
         in al, portc
+
         and al, 0f0h
         cmp al, 0f0h
         jnz check_key
@@ -216,8 +224,10 @@ infiloop: jmp infiloop
         ; check for key press in column 4
         mov al, 0bh
         mov bl, al
+
         out portc, al
         in al, portc
+
         and al, 0f0h
         cmp al, 0f0h
         jnz check_key
@@ -239,56 +249,100 @@ infiloop: jmp infiloop
         or al, bl ; which key is pressed
         cmp al, 0eeh
         jnz x5
+
+        mov al, 00
+        out portc, al
+
         call drClose
         jmp check_key
 
     x5: cmp al, 0deh
-        jnz x6                              
+        jnz x6   
+
+        mov al, 00
+        out portc, al     
+
         call up0
         jmp check_key
 
     x6: cmp al, 0ddh 
         jnz x7
+
+        mov al, 00
+        out portc, al
+
         call down1
         jmp check_key
 
     x7: cmp al, 0dbh
         jnz x8
+
+        mov al, 00
+        out portc, al
+
         call up1
         jmp check_key
 
     x8: cmp al, 0d7h
         jnz x9
+
+        mov al, 00
+        out portc, al
+
         call down2
         jmp check_key
 
     x9:cmp al, 0beh
         jnz x10
+
+        mov al, 00
+        out portc, al
+
         call up2
         jmp check_key
 
     x10:cmp al, 0bdh
         jnz x11
+
+        mov al, 00
+        out portc, al
+
         call down3
         jmp check_key
 
     x11:cmp al, 0bbh
         jnz x12
+
+        mov al, 00
+        out portc, al
+
         call lift0
         jmp check_key
 
     x12:cmp al, 0b7h
         jnz x13
+
+        mov al, 00
+        out portc, al
+
         call lift1
         jmp check_key
 
     x13:cmp al, 07eh
         jnz x14
+
+        mov al, 00
+        out portc, al
+
         call lift2
         jmp check_key
 
     x14:cmp al, 07dh
         jnz check_key
+
+        mov al, 00
+        out portc, al
+        
         call lift3
         jmp check_key
 
