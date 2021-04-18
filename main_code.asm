@@ -342,7 +342,7 @@ infiloop: jmp infiloop
 
         mov al, 00
         out portc, al
-        
+
         call lift3
         jmp check_key
 
@@ -351,23 +351,31 @@ infiloop: jmp infiloop
     cs2_isr:
         push ax
         push bx
+
         mov al, 01100011b ; ocw 2 specific EOI for IR3
         out intloc1, al
+
         mov al, dir
         mov ah, current
         mov bl, dest
+
         cmp al, 00h
         jnz dir_down
+
         call accel50
+
         pop bx
         pop ax
         iret
+
 
     dir_down:
         dec ah
         cmp ah, bl
         jnz dir_down
+
         call decel20
+
         pop bx
         pop ax
         iret
@@ -376,23 +384,30 @@ infiloop: jmp infiloop
     cs1_isr:
         push ax
         push bx
+
         mov al, 01100010b ; ocw 2 specific EOI for IR2
         out intloc1, al
+
         mov al, dir
         mov ah, current
         mov bl, dest
+
         cmp dir, 01
         jnz dir_up
+
         call accel50
         pop bx
         pop ax
         iret
 
+
     dir_up:
         inc ah
         cmp ah, bl
         jnz dir_up
+
         call decel20
+
         pop bx
         pop ax
         iret
@@ -401,65 +416,82 @@ infiloop: jmp infiloop
     fs_isr: 
         push ax
         push bx
+
         mov al, 01100100b ; ocw 2 specific EOI for IR4
         out intloc1, al
+
         mov al, liftMove
         mov ah, current
         mov bl, dest
         mov bh, dir
+
         cmp al, 01h
         jnz f2
+
         cmp bh, 00h
         jnz f4
+
         dec ah
         mov current, ah
         cmp ah, bl
         jnz f1
+
         call decel20
         call ledDisp
+
         mov drState, 00h
         mov AL, 04h
         out bsrcreg, AL
+
         mov liftMove, 00h
-        
 
         pop bx
         pop ax
         iret
+
 
     f4:
         inc ah
         mov current, ah
-
         cmp ah, bl
         jnz f1
+
         call decel20
         call ledDisp
+
         mov drState, 00h
         mov AL, 04h
         out bsrcreg, AL
+
         mov liftMove, 00h
+
         pop bx
         pop ax
         iret
+
 
     f2:
         pop bx
         pop ax
         iret
 
+
     f1: 
         cmp bh, 00h
         jnz f3
+
         dec ah
         mov current, ah
+
         pop bx
         pop ax
         iret
 
+
     f3:
         inc ah
         mov current, ah
+
         pop bx
         pop ax
         iret
@@ -506,6 +538,7 @@ y2:
     mov dir, 00
     mov AL, 02h
     out bsrcreg,al
+    
     mov drState, 01h
     mov AL, 05h
     out bsrcreg, AL
