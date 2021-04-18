@@ -76,7 +76,6 @@ st1: cli
     intloc1 equ 0A0h
     intloc2 equ 0A2h
 
-	bsrportc equ 0c4h
     bsrcreg equ 0c6h
 
     ; suppose set LIFTDIR bit (PC1 of bsr)
@@ -131,9 +130,9 @@ st1: cli
     ; initializing 8255
     ; port A output from 8255; for showing current floor value in LED
     ; port B output from 8255; for showing destination floor value in LED
-    ; port C upper output; for keyboard columns
-    ; port C lower input; for keyboard rows
-    mov al, 10000001b
+    ; port C upper input; for keyboard columns
+    ; port C lower output; for keyboard rows
+    mov al, 10001000b
     out portcreg, al
     mov al, 00h
     out portb, al ; display zero on the LED, at the start
@@ -142,8 +141,14 @@ st1: cli
 
     ; initialising 8255
     ; port C output from 8255; for giving input signals to motor, lift door and one shot timer
-    mov al, 10010010b
+    mov al, 00000000b ; PC0 = 0 initially
     out bsrcreg, al
+    mov al, 00000010b ; PC1 = 0 initially
+    out bsrcreg, al
+    mov al, 00000100b ; PC2 = 0 initially
+    out bsrcreg, al
+    mov al, 00000110b ; PC3 = 0 initially
+    
 
     ; initializing 8259
     ; IR0 = for generating 100 ms one shot timer

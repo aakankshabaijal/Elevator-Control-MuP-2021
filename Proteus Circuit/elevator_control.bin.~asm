@@ -76,7 +76,6 @@ oscreg equ 96h
 intloc1 equ 0A0h
 intloc2 equ 0A2h
 
-bsrportc equ 0c4h
 bsrcreg equ 0c6h
 
 ; suppose set LIFTDIR bit (PC1 of bsr)
@@ -131,18 +130,25 @@ out ostimer1, al
 ; initializing 8255
 ; port A output from 8255; for showing current floor value in LED
 ; port B output from 8255; for showing destination floor value in LED
-; port C upper output; for keyboard columns
-; port C lower input; for keyboard rows
-mov al, 10000001b
+; port C upper input; for keyboard columns
+; port C lower output; for keyboard rows
+mov al, 10001000b
 out portcreg, al
 mov al, 00h
 out portb, al ; display zero on the LED, at the start
 out porta, al ; display zero on the LED, at the start
+out portc, al ; give zero on keyboard column at the start
 
 ; initialising 8255
 ; port C output from 8255; for giving input signals to motor, lift door and one shot timer
-mov al, 10010010b
+mov al, 00000000b ; PC0 = 0 initially
 out bsrcreg, al
+mov al, 00000010b ; PC1 = 0 initially
+out bsrcreg, al
+mov al, 00000100b ; PC2 = 0 initially
+out bsrcreg, al
+mov al, 00000110b ; PC3 = 0 initially
+
 
 ; initializing 8259
 ; IR0 = for generating 100 ms one shot timer
@@ -169,6 +175,7 @@ infiloop: jmp infiloop
 os_isr:
 mov al, 01100000b ; ocw 2 specific EOI for IR0
 out intloc1, al
+
 mov CL, 01h
 iret
 
@@ -180,6 +187,7 @@ out intloc1, al
 ; check for key press
 mov al, 00h
 out portc, al
+
 x1: in al, portc
 and al, 0f0h
 cmp al, 0f0h
@@ -188,8 +196,10 @@ jz x1
 ; check for key press in column 1
 mov al, 0eh
 mov bl, al
+
 out portc, al
 in al, portc
+
 and al, 0f0h
 cmp al, 0f0h
 jnz check_key
@@ -197,8 +207,10 @@ jnz check_key
 ; check for key press in column 2
 mov al, 0dh
 mov bl, al
+
 out portc, al
 in al, portc
+
 and al, 0f0h
 cmp al, 0f0h
 jnz check_key
@@ -206,8 +218,10 @@ jnz check_key
 ; check for key press in column 3
 mov al, 0bh
 mov bl, al
+
 out portc, al
 in al, portc
+
 and al, 0f0h
 cmp al, 0f0h
 jnz check_key
@@ -215,8 +229,10 @@ jnz check_key
 ; check for key press in column 4
 mov al, 0bh
 mov bl, al
+
 out portc, al
 in al, portc
+
 and al, 0f0h
 cmp al, 0f0h
 jnz check_key
@@ -238,56 +254,100 @@ check_key:
 or al, bl ; which key is pressed
 cmp al, 0eeh
 jnz x5
+
+mov al, 00
+out portc, al
+
 call drClose
 jmp check_key
 
 x5: cmp al, 0deh
 jnz x6
+
+mov al, 00
+out portc, al
+
 call up0
 jmp check_key
 
 x6: cmp al, 0ddh
 jnz x7
+
+mov al, 00
+out portc, al
+
 call down1
 jmp check_key
 
 x7: cmp al, 0dbh
 jnz x8
+
+mov al, 00
+out portc, al
+
 call up1
 jmp check_key
 
 x8: cmp al, 0d7h
 jnz x9
+
+mov al, 00
+out portc, al
+
 call down2
 jmp check_key
 
 x9:cmp al, 0beh
 jnz x10
+
+mov al, 00
+out portc, al
+
 call up2
 jmp check_key
 
 x10:cmp al, 0bdh
 jnz x11
+
+mov al, 00
+out portc, al
+
 call down3
 jmp check_key
 
 x11:cmp al, 0bbh
 jnz x12
+
+mov al, 00
+out portc, al
+
 call lift0
 jmp check_key
 
 x12:cmp al, 0b7h
 jnz x13
+
+mov al, 00
+out portc, al
+
 call lift1
 jmp check_key
 
 x13:cmp al, 07eh
 jnz x14
+
+mov al, 00
+out portc, al
+
 call lift2
 jmp check_key
 
 x14:cmp al, 07dh
 jnz check_key
+
+mov al, 00
+out portc, al
+
 call lift3
 jmp check_key
 
@@ -296,23 +356,31 @@ jmp check_key
 cs2_isr:
 push ax
 push bx
+
 mov al, 01100011b ; ocw 2 specific EOI for IR3
 out intloc1, al
+
 mov al, dir
 mov ah, current
 mov bl, dest
+
 cmp al, 00h
 jnz dir_down
+
 call accel50
+
 pop bx
 pop ax
 iret
+
 
 dir_down:
 dec ah
 cmp ah, bl
 jnz dir_down
+
 call decel20
+
 pop bx
 pop ax
 iret
@@ -321,23 +389,30 @@ iret
 cs1_isr:
 push ax
 push bx
+
 mov al, 01100010b ; ocw 2 specific EOI for IR2
 out intloc1, al
+
 mov al, dir
 mov ah, current
 mov bl, dest
+
 cmp dir, 01
 jnz dir_up
+
 call accel50
 pop bx
 pop ax
 iret
 
+
 dir_up:
 inc ah
 cmp ah, bl
 jnz dir_up
+
 call decel20
+
 pop bx
 pop ax
 iret
@@ -346,65 +421,82 @@ iret
 fs_isr:
 push ax
 push bx
+
 mov al, 01100100b ; ocw 2 specific EOI for IR4
 out intloc1, al
+
 mov al, liftMove
 mov ah, current
 mov bl, dest
 mov bh, dir
+
 cmp al, 01h
 jnz f2
+
 cmp bh, 00h
 jnz f4
+
 dec ah
 mov current, ah
 cmp ah, bl
 jnz f1
+
 call decel20
 call ledDisp
+
 mov drState, 00h
 mov AL, 04h
 out bsrcreg, AL
-mov liftMove, 00h
 
+mov liftMove, 00h
 
 pop bx
 pop ax
 iret
+
 
 f4:
 inc ah
 mov current, ah
-
 cmp ah, bl
 jnz f1
+
 call decel20
 call ledDisp
+
 mov drState, 00h
 mov AL, 04h
 out bsrcreg, AL
+
 mov liftMove, 00h
+
 pop bx
 pop ax
 iret
+
 
 f2:
 pop bx
 pop ax
 iret
 
+
 f1:
 cmp bh, 00h
 jnz f3
+
 dec ah
 mov current, ah
+
 pop bx
 pop ax
 iret
 
+
 f3:
 inc ah
 mov current, ah
+
 pop bx
 pop ax
 iret
@@ -451,6 +543,7 @@ mov dest, 00
 mov dir, 00
 mov AL, 02h
 out bsrcreg,al
+
 mov drState, 01h
 mov AL, 05h
 out bsrcreg, AL
