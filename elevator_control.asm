@@ -162,8 +162,10 @@ st1: cli
     out intloc2, al
     mov al, 00000001b ; icw 4
     out intloc2,al
-    mov al, 11111100b ; ocw 1
+    mov al, 11100000b ; ocw 1
     out intloc2, al
+
+    sti
     
 infiloop: jmp infiloop
 
@@ -350,6 +352,8 @@ infiloop: jmp infiloop
 
         call lift3
         jmp check_key
+
+        iret
 
 
     ; ISR for coarse sensor 2
