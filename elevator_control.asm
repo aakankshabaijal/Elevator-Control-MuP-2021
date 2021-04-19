@@ -78,22 +78,6 @@ st1: cli
 
     bsrcreg equ 0c6h
 
-    ; suppose set LIFTDIR bit (PC1 of bsr)
-    ; mov al, 03h  ; 0000 001 1
-    ; out bsrcreg, al
-
-    ; suppose set DOORCLOSE bit (PC2 of bsr)
-    ; mov al, 05h ; 0000 010 1
-    ; out bsrcreg, al
-
-    ; variables used
-    liftMove db 0
-    dest db 0
-    secdest db 0
-    dir db 0
-    drState db 0
-    current db 0
-
     ; initializing timers
     ; first timer (chip 1) mode 3; write 16 bit value 61a8h; converts 2.5MHz into 100Hz
     mov al, 00110110b
@@ -1811,6 +1795,17 @@ liftstop proc near
     pop ax
     ret
 liftstop endp
+
+
+    ; storing variables in RAM
+    db 1000 dup(0) ; randomly skipping 1000 memory locations so that variables are stored in RAM
+    ; variables used
+    liftMove db 0
+    dest db 0
+    secdest db 0
+    dir db 0
+    drState db 0
+    current db 0
     
 
     
