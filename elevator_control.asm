@@ -125,6 +125,9 @@ st1: cli
 
     ; initialising 8255
     ; port C output from 8255; for giving input signals to motor, lift door and one shot timer
+    mov al, 10000000b;
+    out bsrcreg, al
+
     mov al, 00000000b ; PC0 = 0 initially
     out bsrcreg, al
     mov al, 00000010b ; PC1 = 0 initially
